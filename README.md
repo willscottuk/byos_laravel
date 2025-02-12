@@ -4,6 +4,11 @@ This is a PoC of a TRMNL server, written in Laravel. Inspired by https://github.
 
 ⚠️ Not meant for production use.️️ ⚠️
 
+### Requirements
+* PHP >= 8.2
+* ext-imagick
+* puppeteer [see Browsershot docs](https://spatie.be/docs/browsershot/v4/requirements)
+
 ### Installation
 
 #### Clone the repository
