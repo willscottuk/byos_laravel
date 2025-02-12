@@ -10,7 +10,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @php
-                        $current_image_uuid = auth()->user()->devices()->first()->current_screen_image;
+                        $current_image_uuid = auth()->user()?->devices()?->first()?->current_screen_image;
                         $current_image_path = 'images/generated/' . $current_image_uuid . '.png';
                     @endphp
                     @if($current_image_uuid)
