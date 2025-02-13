@@ -24,7 +24,9 @@ Route::get('/display', function (Request $request) {
         'last_firmware_version' => $request->header('fw-version'),
     ]);
 
-    $image_path = collect(\Storage::disk('public')->files('/images/generated'))->first(fn ($file) => \Str::endsWith($file, '.bmp'));
+    $image_uuid = $device->current_screen_image;
+
+    $image_path = 'images/generated/'.$image_uuid.'.bmp';
     $filename = basename($image_path);
 
     return response()->json([

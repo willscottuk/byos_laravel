@@ -15,7 +15,7 @@ class ScreenGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'trmnl:screen:generate {deviceId=1}';
+    protected $signature = 'trmnl:screen:generate {deviceId=1} {view=trmnl}';
 
     /**
      * The console command description.
@@ -31,6 +31,7 @@ class ScreenGeneratorCommand extends Command
     {
 
         $deviceId = $this->argument('deviceId');
+        $view = $this->argument('view');
 
         $uuid = Uuid::uuid4()->toString();
         $pngPath = public_path('storage/images/generated/').$uuid.'.png';
@@ -38,7 +39,7 @@ class ScreenGeneratorCommand extends Command
 
         // Generate PNG
         try {
-            Browsershot::html(view('trmnl')->render())
+            Browsershot::html(view($view)->render())
                 ->windowSize(800, 480)
                 ->save($pngPath);
         } catch (\Exception $e) {
