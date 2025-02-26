@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use App\Jobs\FetchProxyCloudResponses;
 
-//Artisan::command('inspire', function () {
+// Artisan::command('inspire', function () {
 //    $this->comment(Inspiring::quote());
-//})->purpose('Display an inspiring quote')->hourly();
+// })->purpose('Display an inspiring quote')->hourly();
+
+Schedule::job(new FetchProxyCloudResponses)->everyFifteenMinutes();

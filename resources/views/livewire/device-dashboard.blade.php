@@ -1,3 +1,15 @@
+<?php
+
+use Livewire\Volt\Component;
+
+new class extends Component {
+    public function mount()
+    {
+        return view('livewire.device-dashboard', ['devices' => auth()->user()->devices()->paginate(10)]);
+    }
+}
+?>
+
 <div>
     <div class="flex w-full max-w-3xl flex-col gap-6">
         @if($devices->isEmpty())
@@ -21,7 +33,8 @@
                     <div class="px-10 py-8">
                         @php
                             $current_image_uuid =$device->current_screen_image;
-                            $current_image_path = 'images/generated/' . $current_image_uuid . '.png';
+                            file_exists('storage/images/generated/' . $current_image_uuid . '.png') ? $file_extension = 'png' : $file_extension = 'bmp';
+                            $current_image_path = 'storage/images/generated/' . $current_image_uuid . '.' . $file_extension;
                         @endphp
 
                         <h1 class="text-xl font-medium dark:text-zinc-200">{{ $device->name }}</h1>
