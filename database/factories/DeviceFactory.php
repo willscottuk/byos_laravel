@@ -14,12 +14,17 @@ class DeviceFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->firstName().' TRMNL',
+            'name' => $this->faker->firstName().'\'s TRMNL',
             'mac_address' => $this->faker->macAddress(),
             'default_refresh_interval' => '900',
             'friendly_id' => Str::random(6),
             'api_key' => 'tD-'.Str::random(19),
             'user_id' => 1,
+            'last_battery_voltage' => $this->faker->randomFloat(2, 3.0, 4.2),
+            'last_rssi_level' => $this->faker->numberBetween(-100, 0),
+            'last_firmware_version' => '1.6.0',
+            'proxy_cloud' => $this->faker->boolean(),
+            'last_log_request' => ['status' => 'success', 'timestamp' => Carbon::now()->toDateTimeString()],
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

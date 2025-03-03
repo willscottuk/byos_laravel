@@ -11,42 +11,44 @@ new class extends Component {
 ?>
 
 <div>
-    <div class="flex w-full max-w-3xl flex-col gap-6">
-        @if($devices->isEmpty())
-            <div class="flex flex-col gap-6">
-                <div
-                    class="rounded-xl border bg-white dark:bg-stone-950 dark:border-stone-800 text-stone-800 shadow-xs">
-                    <div class="px-10 py-8">
-                        <h1 class="text-xl font-medium dark:text-zinc-200">Add your first device</h1>
-                        <flux:button href="{{ route('devices') }}" class="mt-4" icon="plus-circle" variant="primary"
-                                     class="w-full mt-4">Add Device
-                        </flux:button>
+    <div class="bg-muted flex flex-col items-center justify-center gap-6 p-6 md:p-10">
+        <div class="flex w-full max-w-3xl flex-col gap-6">
+            @if($devices->isEmpty())
+                <div class="flex flex-col gap-6">
+                    <div
+                        class="rounded-xl border bg-white dark:bg-stone-950 dark:border-stone-800 text-stone-800 shadow-xs">
+                        <div class="px-10 py-8">
+                            <h1 class="text-xl font-medium dark:text-zinc-200">Add your first device</h1>
+                            <flux:button href="{{ route('devices') }}" class="mt-4" icon="plus-circle" variant="primary"
+                                         class="w-full mt-4">Add Device
+                            </flux:button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endif
+            @endif
 
-        @foreach($devices as $device)
-            <div class="flex flex-col gap-6">
-                <div
-                    class="rounded-xl border bg-white dark:bg-stone-950 dark:border-stone-800 text-stone-800 shadow-xs">
-                    <div class="px-10 py-8">
-                        @php
-                            $current_image_uuid =$device->current_screen_image;
-                            file_exists('storage/images/generated/' . $current_image_uuid . '.png') ? $file_extension = 'png' : $file_extension = 'bmp';
-                            $current_image_path = 'storage/images/generated/' . $current_image_uuid . '.' . $file_extension;
-                        @endphp
+            @foreach($devices as $device)
+                <div class="flex flex-col gap-6">
+                    <div
+                        class="rounded-xl border bg-white dark:bg-stone-950 dark:border-stone-800 text-stone-800 shadow-xs">
+                        <div class="px-10 py-8">
+                            @php
+                                $current_image_uuid =$device->current_screen_image;
+                                file_exists('storage/images/generated/' . $current_image_uuid . '.png') ? $file_extension = 'png' : $file_extension = 'bmp';
+                                $current_image_path = 'storage/images/generated/' . $current_image_uuid . '.' . $file_extension;
+                            @endphp
 
-                        <h1 class="text-xl font-medium dark:text-zinc-200">{{ $device->name }}</h1>
-                        <p class="text-sm dark:text-zinc-400">{{$device->mac_address}}</p>
-                        @if($current_image_uuid)
-                            <flux:separator class="mt-2 mb-4"/>
-                            <img src="{{ asset($current_image_path) }}" alt="Current Image"/>
-                        @endif
+                            <h1 class="text-xl font-medium dark:text-zinc-200">{{ $device->name }}</h1>
+                            <p class="text-sm dark:text-zinc-400">{{$device->mac_address}}</p>
+                            @if($current_image_uuid)
+                                <flux:separator class="mt-2 mb-4"/>
+                                <img src="{{ asset($current_image_path) }}" alt="Current Image"/>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
 
     {{--    @php--}}
