@@ -4,6 +4,8 @@ Laravel Trmnl Server is a self-hostable implementation of a TRMNL server, built 
 It enables you to manage TRMNL devices, generate screens dynamically, and can act as a proxy for the TRMNL API (native plugin system). 
 Inspired by [usetrmnl/byos_sinatra](https://github.com/usetrmnl/byos_sinatra).
 
+If you are looking for a Laravel package designed to streamline the development of both public and private TRMNL plugins, check out [bnussbau/trmnl-laravel](https://github.com/bnussbau/laravel-trmnl).
+
 ![Screenshot](README_byos-screenshot.png)
 
 * 👉 [more Screenshots](screenshots/SCREENSHOTS.md)
