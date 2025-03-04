@@ -44,7 +44,7 @@ COPY --chown=www-data:www-data . .
 COPY --chown=www-data:www-data ./.env.example ./.env
 
 # Install application dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 RUN npm install && npm run build
 
 # Copy configuration files

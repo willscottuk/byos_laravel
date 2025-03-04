@@ -6,16 +6,21 @@ Inspired by [usetrmnl/byos_sinatra](https://github.com/usetrmnl/byos_sinatra).
 
 ![Screenshot](README_byos-screenshot.png)
 
-[More Screenshots](screenshots/SCREENSHOTS.md)
+* 👉 [more Screenshots](screenshots/SCREENSHOTS.md)
 
 ### Key Features
 
 * 📡 Device Information – Display battery status, WiFi strength, firmware version, and more. 
 * 🔍 Auto-Join – Automatically detects and adds devices from your local network. 
 * 🖥️ Screen Generation – Supports Markup, API, or update via Code. 
-* 🔄 TRMNL API Proxy – Can act as a proxy for TRMNL API (requires TRMNL Developer Edition). 
+* 🔄 TRMNL API Proxy – Can act as a proxy for the TRMNL Display API (requires TRMNL Developer Edition). 
   * This enables a hybrid setup – for example, you can update your custom Train Monitor every 5 minutes in the morning, while displaying native TRMNL plugins throughout the day.
 * 🐳 Deployment – Dockerized setup for easier hosting (Dockerfile, docker-compose).
+
+### 🎯 Target Audience
+
+This project is for developers who are looking for a self-hosted server for devices running the TRMNL firmware.
+It serves as a starter kit, giving you the flexibility to build and extend it however you like.
 
 ### Requirements
 
@@ -178,7 +183,7 @@ class PluginTrainMonitorFetch extends Command
 {
     protected $signature = 'plugin:train:fetch';
 
-    protected $description = 'Command description';
+    protected $description = 'Fetches train monitor data and updates the screen';
 
     public function handle(): void
     {
@@ -238,6 +243,9 @@ Here are some features and improvements that are open for contribution:
 	- 💬 Quotes
 	- 🏡 Home Assistant integration
 - Provide Web UI controls to enable/disable plugins.
+
+##### 📦 Visual Studio Code Devcontainer
+* Add a .devcontainer to this repo for easier development with Docker.
 
 #####  Improve Code Coverage
 

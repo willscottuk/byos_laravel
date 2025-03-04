@@ -18,7 +18,7 @@ class DeviceFactory extends Factory
             'mac_address' => $this->faker->macAddress(),
             'default_refresh_interval' => '900',
             'friendly_id' => Str::random(6),
-            'api_key' => 'tD-'.Str::random(19),
+            'api_key' => Str::random(22),
             'user_id' => 1,
             'last_battery_voltage' => $this->faker->randomFloat(2, 3.0, 4.2),
             'last_rssi_level' => $this->faker->numberBetween(-100, 0),
