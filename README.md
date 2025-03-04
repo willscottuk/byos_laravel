@@ -24,6 +24,9 @@ If you are looking for a Laravel package designed to streamline the development 
 This project is for developers who are looking for a self-hosted server for devices running the TRMNL firmware.
 It serves as a starter kit, giving you the flexibility to build and extend it however you like.
 
+### Support ❤️
+Support the development of this package by purchasing a TRMNL device through our referral link: https://usetrmnl.com/?ref=laravel-trmnl. At checkout, use the code `laravel-trmnl` to receive a $15 discount on your purchase.
+
 ### Requirements
 
 * PHP >= 8.2
