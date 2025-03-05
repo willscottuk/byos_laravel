@@ -68,8 +68,9 @@ Route::get('/setup', function (Request $request) {
 
     if (! $mac_address) {
         return response()->json([
+            'status' => '404',
             'message' => 'MAC Address not registered',
-        ], 400);
+        ], 404);
     }
 
     $device = Device::where('mac_address', $mac_address)->first();
@@ -90,6 +91,7 @@ Route::get('/setup', function (Request $request) {
             ]);
         } else {
             return response()->json([
+                'status' => '404',
                 'message' => 'MAC Address not registered or invalid access token',
             ], 404);
         }
@@ -114,6 +116,7 @@ Route::post('/log', function (Request $request) {
 
     if (! $device) {
         return response()->json([
+            'status' => '404',
             'message' => 'Device not found or invalid access token',
         ], 404);
     }

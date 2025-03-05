@@ -1,4 +1,4 @@
-## Laravel Trmnl Server
+## TRMNL BYOS (PHP/Laravel)
 
 Laravel Trmnl Server is a self-hostable implementation of a TRMNL server, built with Laravel. 
 It enables you to manage TRMNL devices, generate screens dynamically, and can act as a proxy for the TRMNL API (native plugin system). 
@@ -25,6 +25,8 @@ This project is for developers who are looking for a self-hosted server for devi
 It serves as a starter kit, giving you the flexibility to build and extend it however you like.
 
 ### Support ❤️
+This repo is maintained voluntarily by [@bnussbau](https://github.com/bnussbau).
+
 Support the development of this package by purchasing a TRMNL device through our referral link: https://usetrmnl.com/?ref=laravel-trmnl. At checkout, use the code `laravel-trmnl` to receive a $15 discount on your purchase.
 
 ### Requirements
@@ -88,6 +90,7 @@ volumes:
 | `TRMNL_PROXY_BASE_URL`        | Base URL of the native TRMNL service                             | https://trmnl.app |
 | `TRMNL_PROXY_REFRESH_MINUTES` | How often should the server fetch new images from native service | 15                |
 | `REGISTRATION_ENABLED`        | Allow user registration via Webinterface                         | 1                 |
+| `FORCE_HTTPS`                 | If your server handles SSL termination, enforce HTTPS.           | 0                 |
 
 #### Login
 
@@ -209,6 +212,36 @@ Schedule::command('plugin:train:fetch')
 
 This will automatically update the screen every 5 minutes between 5:00 AM and 6:00 PM local time.
 
+### 🏗️ Roadmap
+
+Here are some features and improvements that are open for contribution:
+
+##### 🔌 Plugin System
+
+- Enable configurable plugins via the Web Interface.
+- Ensure compatibility with the trmnl-laravel package.
+- Implement auto-discovery for plugins.
+
+##### ⏳ Scheduling
+
+- Move task scheduling from console.php to a Web Interface.
+- Allow users to configure custom schedule intervals.
+
+##### 🖥️ “Native” Plugins
+- Add built-in plugins such as (as an example):
+    - ☁️ Weather
+    - 💬 Quotes
+    - 🏡 Home Assistant integration
+- Provide Web UI controls to enable/disable plugins.
+
+##### 📦 Visual Studio Code Devcontainer
+* Add a .devcontainer to this repo for easier development with Docker.
+
+#####  Improve Code Coverage
+
+- Expand Pest tests to cover more functionality.
+- Increase code coverage (currently at 86.9%).
+
 ### 🤝 Contribution
 Contributions are welcome! If you’d like to improve the project, follow these steps:
 
@@ -226,36 +259,6 @@ Contributions are welcome! If you’d like to improve the project, follow these 
     - Provide a clear description of your changes.
 
 🚀 Thank you for contributing! Every contribution helps improve the project.
-
-### 🏗️ Roadmap
-
-Here are some features and improvements that are open for contribution:
-
-##### 🔌 Plugin System
-
-- Enable configurable plugins via the Web Interface. 
-- Ensure compatibility with the trmnl-laravel package. 
-- Implement auto-discovery for plugins.
-
-##### ⏳ Scheduling
-
-- Move task scheduling from console.php to a Web Interface.
-- Allow users to configure custom schedule intervals.
-
-##### 🖥️ “Native” Plugins
-- Add built-in plugins such as (as an example):
-    - ☁️ Weather
-	- 💬 Quotes
-	- 🏡 Home Assistant integration
-- Provide Web UI controls to enable/disable plugins.
-
-##### 📦 Visual Studio Code Devcontainer
-* Add a .devcontainer to this repo for easier development with Docker.
-
-#####  Improve Code Coverage
-
-- Expand Pest tests to cover more functionality.
-- Increase code coverage (currently at 86.9%).
 
 ### License
 MIT
