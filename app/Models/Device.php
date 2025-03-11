@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Device extends Model
 {
@@ -49,5 +50,30 @@ class Device extends Model
         } else {
             return 3; // Strong signal (3 bars)
         }
+    }
+
+    public function playlists(): HasMany
+    {
+        return $this->hasMany(Playlist::class);
+    }
+
+    public function getNextPlaylistItem(): ?PlaylistItem
+    {
+        // Get all active playlists
+        $playlists = $this->playlists()
+            ->where('is_active', true)
+            ->get();
+
+        // Find the first active playlist with an available item
+        foreach ($playlists as $playlist) {
+            if ($playlist->isActiveNow()) {
+                $nextItem = $playlist->getNextPlaylistItem();
+                if ($nextItem) {
+                    return $nextItem;
+                }
+            }
+        }
+
+        return null;
     }
 }
