@@ -43,7 +43,7 @@ Support the development of this package by purchasing a TRMNL device through our
 #### Clone the repository
 
 ```bash
-git clone git@github.com:bnussbau/laravel-trmnl-server.git
+git clone git@github.com:usetrmnl/byos_laravel.git
 ```
 
 #### Copy environment file
