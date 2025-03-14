@@ -6,11 +6,11 @@
     "workspaceFolder": "/workspaces/laravel",
     "dockerComposeFile": "docker-compose.yaml",
     "forwardPorts": [ "nginx:80" ],
+    "postCreateCommand": "composer install && npm install && npm run build",
     "customizations": {
         "vscode": {
             "extensions": [
                 "bmewburn.vscode-intelephense-client",
-                "eamodio.gitlens",
                 "EditorConfig.EditorConfig",
                 "mikestead.dotenv",
                 "onecentlin.laravel-blade",
