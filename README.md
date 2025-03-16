@@ -221,21 +221,21 @@ Here are some features and improvements that are open for contribution:
 
 ##### 🔌 Plugin System
 
-- Enable configurable plugins via the Web Interface.
+- ~~Enable configurable plugins via the Web Interface.~~ ✅
 - Ensure compatibility with the trmnl-laravel package.
 - Implement auto-discovery for plugins.
 
-##### ⏳ Scheduling
+##### ⏳ Scheduling / Playlists
 
 - Move task scheduling from console.php to a Web Interface.
-- Allow users to configure custom schedule intervals.
+- ~~Allow users to configure custom schedule intervals.~~ ✅
 
 ##### 🖥️ “Native” Plugins
 - Add built-in plugins such as (as an example):
     - ☁️ Weather
     - 💬 Quotes
     - 🏡 Home Assistant integration
-- Provide Web UI controls to enable/disable plugins.
+- Provide Web UI controls to enable/disable plugins. 
 
 ##### 📦 Visual Studio Code Devcontainer
 * ~~Add a .devcontainer to this repo for easier development with Docker.~~ ✅
