@@ -2,8 +2,8 @@
 
 [![tests](https://github.com/usetrmnl/byos_laravel/actions/workflows/test.yml/badge.svg)](https://github.com/usetrmnl/byos_laravel/actions/workflows/test.yml)
 
-TRMNL BYOS Laravel is a self-hostable implementation of a TRMNL server, built with Laravel. 
-It enables you to manage TRMNL devices, generate screens dynamically, and can act as a proxy for the native cloud service (native plugins, receipts). 
+TRMNL BYOS Laravel is a self-hostable implementation of a TRMNL server, built with Laravel.
+It enables you to manage TRMNL devices, generate screens dynamically, and can act as a proxy for the native cloud service (native plugins, receipts).
 Inspired by [usetrmnl/byos_sinatra](https://github.com/usetrmnl/byos_sinatra).
 
 If you are looking for a Laravel package designed to streamline the development of both public and private TRMNL plugins, check out [bnussbau/trmnl-laravel](https://github.com/bnussbau/laravel-trmnl).
@@ -15,11 +15,11 @@ If you are looking for a Laravel package designed to streamline the development 
 
 ### Key Features
 
-* 📡 Device Information – Display battery status, WiFi strength, firmware version, and more. 
-* 🔍 Auto-Join – Automatically detects and adds devices from your local network. 
-* 🖥️ Screen Generation – Supports Plugins, API, Markup or updates via Code. 
-* 🔄 TRMNL API Proxy – Can act as a proxy for the native cloud service (requires TRMNL Developer Edition). 
-  * This enables a hybrid setup – for example, you can update your custom Train Monitor every 5 minutes in the morning, while displaying native TRMNL plugins throughout the day.
+* 📡 Device Information – Display battery status, WiFi strength, firmware version, and more.
+* 🔍 Auto-Join – Automatically detects and adds devices from your local network.
+* 🖥️ Screen Generation – Supports Plugins, API, Markup or updates via Code.
+* 🔄 TRMNL API Proxy – Can act as a proxy for the native cloud service (requires TRMNL Developer Edition).
+    * This enables a hybrid setup – for example, you can update your custom Train Monitor every 5 minutes in the morning, while displaying native TRMNL plugins throughout the day.
 * 🌙 Dark Mode – Switch between light and dark mode.
 * 🐳 Deployment – Dockerized setup for easier hosting (Dockerfile, docker-compose).
 * 🛠️ Devcontainer support for easier development.
@@ -114,6 +114,20 @@ Server is ready. Visit tab "Ports" in VSCode and visit the "Forwarded Address" i
 
 Login with user / password `admin@example.com` / `admin@example.com`
 
+### Demo Plugins
+
+Run the ExampleReceiptsSeeder to seed the database with example plugins:
+
+```bash
+php artisan db:seed --class=ExampleReceiptsSeeder
+```
+
+* Zen Quotes
+* This Day in History
+* Weather
+* Train Departure Monitor
+* Home Assistant
+
 ### Usage
 
 #### Environment Variables
@@ -143,11 +157,11 @@ If your environment is local, you can access the server at `http://localhost:456
 ##### Manually
 
 1.	Open the Devices page:
-👉 http://localhost:4567/devices
+      👉 http://localhost:4567/devices
 2.	Click “Add New Device”.
 3.	Retrieve your TRMNL MAC Address and API Key:
-   - You can grab the TRMNL Mac Address and API Key from the TRMNL Dashboard
-   - Alternatively, debug incoming requests to /api/setup to determine them
+- You can grab the TRMNL Mac Address and API Key from the TRMNL Dashboard
+- Alternatively, debug incoming requests to /api/setup to determine them
 
 ### ⚙️ Configure Server for Device
 
@@ -175,7 +189,7 @@ See this YouTube guide: [https://www.youtube.com/watch?v=3xehPW-PCOM](https://ww
 
 #### 🎨 Blade View
 * Edit `resources/views/trmnl.blade.php`
-  * Available Blade Components are listed here: [laravel-trmnl | Blade Components](https://github.com/bnussbau/laravel-trmnl/tree/main/resources/views/components)
+    * Available Blade Components are listed here: [laravel-trmnl | Blade Components](https://github.com/bnussbau/laravel-trmnl/tree/main/resources/views/components)
 * To generate the screen, run
 
 ```bash
@@ -252,42 +266,31 @@ Here are some features and improvements that are open for contribution:
 
 ##### 🔌 Plugin System
 
-- ~~Enable configurable plugins via the Web Interface.~~ ✅
 - Ensure compatibility with the trmnl-laravel package.
 - Implement auto-discovery for plugins.
 
-##### ⏳ Scheduling / Playlists
-
-- Move task scheduling from console.php to a Web Interface.
-- ~~Allow users to configure custom schedule intervals.~~ ✅
-
 ##### 🖥️ “Native” Plugins
-- Add built-in plugins such as (as an example):
-    - ☁️ Weather
-    - 💬 Quotes
-    - 🏡 Home Assistant integration
-- Provide Web UI controls to enable/disable plugins. 
 
-##### 📦 Visual Studio Code Devcontainer
-* ~~Add a .devcontainer to this repo for easier development with Docker.~~ ✅
+- Architecture for native plugins.
+- Configuration UI
 
 #####  Improve Code Coverage
 
 - Expand Pest tests to cover more functionality.
-- Increase code coverage (currently at 86.9%).
+- Increase code coverage
 
 ### 🤝 Contribution
 Contributions are welcome! If you’d like to improve the project, follow these steps:
 
 1.	Open an Issue
-      - Before submitting a pull request, create an issue to discuss your idea.
-      - Clearly describe the feature or bug fix you want to work on.
-2.	Fork the Repository & Create a Branch 
+    - Before submitting a pull request, create an issue to discuss your idea.
+    - Clearly describe the feature or bug fix you want to work on.
+2.	Fork the Repository & Create a Branch
 3.  Make Your Changes & Add Tests
     - Ensure your code follows best practices.
     - Add Pest tests to cover your changes.
 4.	Run Tests
-    - `php artisan test`
+      - `php artisan test`
 5.  Submit a Pull Request (PR)
     - Push your branch and create a PR.
     - Provide a clear description of your changes.
