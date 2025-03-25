@@ -8,7 +8,7 @@ new class extends Component {
     public int $data_stale_minutes = 60;
     public string $data_strategy = "polling";
     public string $polling_url;
-    public string $polling_verb ="get";
+    public string $polling_verb = "get";
     public $polling_header;
     public array $plugins;
 
@@ -49,14 +49,20 @@ new class extends Component {
     }
 
 
-
     public function mount(): void
     {
-        $userPlugins =auth()->user()?->plugins?->map(function ($plugin) {
+        $userPlugins = auth()->user()?->plugins?->map(function ($plugin) {
             return $plugin->toArray();
         })->toArray();
 
         $this->plugins = array_merge($this->native_plugins, $userPlugins ?? []);
+    }
+
+    public function seedExamplePlugins(): void
+    {
+//        \Artisan::call('db:seed', ['--class' => 'ExampleReceiptsSeeder']);
+        \Artisan::call(\App\Console\Commands\ExampleReceiptsSeederCommand::class, ['user_id' => auth()->id()]);
+
     }
 
 };
@@ -66,9 +72,29 @@ new class extends Component {
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-semibold dark:text-gray-100">Plugins</h2>
-            <flux:modal.trigger name="add-plugin">
-                <flux:button icon="plus" variant="primary">Add Plugin</flux:button>
-            </flux:modal.trigger>
+
+            <flux:button.group>
+                <flux:modal.trigger name="add-plugin">
+                    <flux:button icon="plus" variant="primary">Add Plugin</flux:button>
+                </flux:modal.trigger>
+
+                <flux:dropdown>
+                    <flux:button icon="chevron-down" variant="primary"></flux:button>
+                    <flux:menu>
+                        <flux:menu.item icon="beaker" wire:click="seedExamplePlugins">Seed Example Plugins</flux:menu.item>
+                        {{--                        <flux:menu.separator/>--}}
+                        {{--                        <flux:modal.trigger name="import-receipt">--}}
+                        {{--                            <flux:menu.item icon="paper-clip">Import Receipt ZIP File</flux:menu.item>--}}
+                        {{--                        </flux:modal.trigger>--}}
+                        {{--                        <flux:menu.separator/>--}}
+                        {{--                        <flux:modal.trigger name="add-native-plugin">--}}
+                        {{--                            <flux:menu.item icon="code-bracket">New Native Plugin</flux:menu.item>--}}
+                        {{--                        </flux:modal.trigger>--}}
+                    </flux:menu>
+                </flux:dropdown>
+            </flux:button.group>
+
+
         </div>
 
         <flux:modal name="add-plugin" class="md:w-96">
@@ -84,26 +110,28 @@ new class extends Component {
                     </div>
 
                     <div class="mb-4">
-                        <flux:input label="Data is stale after minutes" wire:model="data_stale_minutes" id="data_stale_minutes"
+                        <flux:input label="Data is stale after minutes" wire:model="data_stale_minutes"
+                                    id="data_stale_minutes"
                                     class="block mt-1 w-full" type="number" name="data_stale_minutes" autofocus/>
                     </div>
 
                     <div class="mb-4">
                         <flux:radio.group wire:model="data_strategy" label="Data Strategy" variant="segmented">
                             <flux:radio value="polling" label="Polling"/>
-                            <flux:radio value="webhook" label="Webhook" />
+                            <flux:radio value="webhook" label="Webhook"/>
                         </flux:radio.group>
                     </div>
 
                     <div class="mb-4">
-                        <flux:input label="Polling URL" wire:model="polling_url" id="polling_url" placeholder="https://example.com/api"
+                        <flux:input label="Polling URL" wire:model="polling_url" id="polling_url"
+                                    placeholder="https://example.com/api"
                                     class="block mt-1 w-full" type="text" name="polling_url" autofocus/>
                     </div>
 
                     <div class="mb-4">
-                        <flux:radio.group wire:model="polling_verb" label="Polling Verb"  variant="segmented">
+                        <flux:radio.group wire:model="polling_verb" label="Polling Verb" variant="segmented">
                             <flux:radio value="get" label="GET"/>
-                            <flux:radio value="post" label="POST" />
+                            <flux:radio value="post" label="POST"/>
                         </flux:radio.group>
                     </div>
 
@@ -124,9 +152,11 @@ new class extends Component {
             @foreach($plugins as $plugin)
                 <div
                     class="rounded-xl border bg-white dark:bg-stone-950 dark:border-stone-800 text-stone-800 shadow-xs">
-                    <a href="{{ ($plugin['detail_view_route']) ? route($plugin['detail_view_route']) : route('plugins.receipt', ['plugin' => $plugin['id']]) }}" class="block">
+                    <a href="{{ ($plugin['detail_view_route']) ? route($plugin['detail_view_route']) : route('plugins.receipt', ['plugin' => $plugin['id']]) }}"
+                       class="block">
                         <div class="flex items-center space-x-4 px-10 py-8">
-                            <flux:icon name="{{$plugin['flux_icon_name'] ?? 'puzzle-piece'}}" class="text-4xl text-accent"/>
+                            <flux:icon name="{{$plugin['flux_icon_name'] ?? 'puzzle-piece'}}"
+                                       class="text-4xl text-accent"/>
                             <h3 class="text-lg font-medium dark:text-zinc-200">{{$plugin['name']}}</h3>
                         </div>
                     </a>

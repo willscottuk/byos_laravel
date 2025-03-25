@@ -10,13 +10,13 @@ class ExampleReceiptsSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run($user_id = 1): void
     {
-        Plugin::create(
+        Plugin::updateOrCreate(
             [
                 'uuid' => '9e46c6cf-358c-4bfe-8998-436b3a207fec',
                 'name' => 'ÖBB Departures',
-                'user_id' => '1',
+                'user_id' => $user_id,
                 'data_payload' => null,
                 'data_stale_minutes' => 15,
                 'data_strategy' => 'polling',
@@ -31,11 +31,11 @@ class ExampleReceiptsSeeder extends Seeder
             ]
         );
 
-        Plugin::create(
+        Plugin::updateOrCreate(
             [
                 'uuid' => '3b046eda-34e9-4232-b935-c33b989a284b',
                 'name' => 'Weather',
-                'user_id' => '1',
+                'user_id' => $user_id,
                 'data_payload' => null,
                 'data_stale_minutes' => 60,
                 'data_strategy' => 'polling',
@@ -50,11 +50,11 @@ class ExampleReceiptsSeeder extends Seeder
             ]
         );
 
-        Plugin::create(
+        Plugin::updateOrCreate(
             [
                 'uuid' => '21464b16-5f5a-4099-a967-f5c915e3da54',
                 'name' => 'Zen Quotes',
-                'user_id' => '1',
+                'user_id' => $user_id,
                 'data_payload' => null,
                 'data_stale_minutes' => 720,
                 'data_strategy' => 'polling',
@@ -69,11 +69,11 @@ class ExampleReceiptsSeeder extends Seeder
             ]
         );
 
-        Plugin::create(
+        Plugin::updateOrCreate(
             [
                 'uuid' => '8d472959-400f-46ee-afb2-4a9f1cfd521f',
                 'name' => 'This Day in History',
-                'user_id' => '1',
+                'user_id' => $user_id,
                 'data_payload' => null,
                 'data_stale_minutes' => 720,
                 'data_strategy' => 'polling',
@@ -88,11 +88,11 @@ class ExampleReceiptsSeeder extends Seeder
             ]
         );
 
-        Plugin::create(
+        Plugin::updateOrCreate(
             [
                 'uuid' => '4349fdad-a273-450b-aa00-3d32f2de788d',
                 'name' => 'Home Assistant',
-                'user_id' => '1',
+                'user_id' => $user_id,
                 'data_payload' => null,
                 'data_stale_minutes' => 30,
                 'data_strategy' => 'polling',
