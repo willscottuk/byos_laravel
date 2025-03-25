@@ -22,7 +22,7 @@ class FetchProxyCloudResponses implements ShouldQueue
     public function handle(): void
     {
         Device::where('proxy_cloud', true)->each(function ($device) {
-            if (!$device->getNextPlaylistItem()) {
+            if (! $device->getNextPlaylistItem()) {
                 try {
                     $response = Http::withHeaders([
                         'id' => $device->mac_address,
@@ -35,7 +35,7 @@ class FetchProxyCloudResponses implements ShouldQueue
                         'fw-version' => $device->last_firmware_version,
                         'accept-encoding' => 'identity;q=1,chunked;q=0.1,*;q=0',
                         'user-agent' => 'ESP32HTTPClient',
-                    ])->get(config('services.trmnl.proxy_base_url') . '/api/display');
+                    ])->get(config('services.trmnl.proxy_base_url').'/api/display');
 
                     $device->update([
                         'proxy_cloud_response' => $response->json(),
@@ -44,11 +44,11 @@ class FetchProxyCloudResponses implements ShouldQueue
                     $imageUrl = $response->json('image_url');
                     $filename = $response->json('filename');
 
-                    \Log::info('Response data: ' . $imageUrl);
+                    \Log::info('Response data: '.$imageUrl);
                     if (isset($imageUrl)) {
                         try {
                             $imageContents = Http::get($imageUrl)->body();
-                            if (!Storage::disk('public')->exists("images/generated/{$filename}.bmp")) {
+                            if (! Storage::disk('public')->exists("images/generated/{$filename}.bmp")) {
                                 Storage::disk('public')->put(
                                     "images/generated/{$filename}.bmp",
                                     $imageContents
@@ -79,7 +79,7 @@ class FetchProxyCloudResponses implements ShouldQueue
                             'fw-version' => $device->last_firmware_version,
                             'accept-encoding' => 'identity;q=1,chunked;q=0.1,*;q=0',
                             'user-agent' => 'ESP32HTTPClient',
-                        ])->post(config('services.trmnl.proxy_base_url') . '/api/log', $device->last_log_request);
+                        ])->post(config('services.trmnl.proxy_base_url').'/api/log', $device->last_log_request);
 
                         $device->update([
                             'last_log_request' => null,

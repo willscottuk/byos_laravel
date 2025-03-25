@@ -44,7 +44,7 @@ class Plugin extends Model
         if ($this->data_strategy === 'polling' && $this->polling_url) {
             // Parse headers from polling_header string
             $headers = ['User-Agent' => 'usetrmnl/byos_laravel', 'Accept' => 'application/json'];
-            
+
             if ($this->polling_header) {
                 $headerLines = explode("\n", trim($this->polling_header));
                 foreach ($headerLines as $line) {

@@ -53,19 +53,21 @@ class Device extends Model
         }
     }
 
-    public function getUpdateFirmwareAttribute() : bool
+    public function getUpdateFirmwareAttribute(): bool
     {
         if ($this->proxy_cloud_response && $this->proxy_cloud_response['update_firmware']) {
             return true;
         }
+
         return false;
     }
 
-    public function getFirmwareUrlAttribute() : string | null
+    public function getFirmwareUrlAttribute(): ?string
     {
         if ($this->proxy_cloud_response && $this->proxy_cloud_response['firmware_url']) {
             return $this->proxy_cloud_response['firmware_url'];
         }
+
         return null;
     }
 
