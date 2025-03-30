@@ -92,6 +92,11 @@ Route::get('/display', function (Request $request) {
         $response['image_url_timeout'] = config('services.trmnl.image_url_timeout');
     }
 
+    // If update_firmware is true, reset it after returning it, to avoid upgrade loop
+    if ($device->update_firmware) {
+        $device->resetUpdateFirmwareFlag();
+    }
+
     return response()->json($response);
 });
 

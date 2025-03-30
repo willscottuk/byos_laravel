@@ -42,5 +42,5 @@ return [
         'override_orig_icon' => env('TRMNL_OVERRIDE_ORIG_ICON', false),
         'image_url_timeout' => env('TRMNL_IMAGE_URL_TIMEOUT', null),
     ],
-    
+
 ];

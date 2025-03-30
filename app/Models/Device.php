@@ -71,6 +71,14 @@ class Device extends Model
         return null;
     }
 
+    public function resetUpdateFirmwareFlag(): void
+    {
+        if ($this->proxy_cloud_response) {
+            $this->proxy_cloud_response = array_merge($this->proxy_cloud_response, ['update_firmware' => false]);
+            $this->save();
+        }
+    }
+
     public function playlists(): HasMany
     {
         return $this->hasMany(Playlist::class);
