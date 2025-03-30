@@ -212,7 +212,7 @@ HTML;
                     <flux:button icon="chevron-down" variant="primary"></flux:button>
                     <flux:menu>
                         <flux:modal.trigger name="delete-plugin">
-                            <flux:menu.item icon="trash">Delete Plugin</flux:menu.item>
+                            <flux:menu.item icon="trash" variant="danger">Delete Plugin</flux:menu.item>
                         </flux:modal.trigger>
                     </flux:menu>
                 </flux:dropdown>
