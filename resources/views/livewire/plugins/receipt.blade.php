@@ -85,7 +85,7 @@ new class extends Component {
         if ($this->plugin->data_strategy === 'polling') {
             // Parse headers from polling_header string
             $headers = ['User-Agent' => 'usetrmnl/byos_laravel', 'Accept' => 'application/json'];
-            
+
             if ($this->plugin->polling_header) {
                 $headerLines = explode("\n", trim($this->plugin->polling_header));
                 foreach ($headerLines as $line) {
@@ -99,7 +99,7 @@ new class extends Component {
             $response = Http::withHeaders($headers)
                 ->get($this->plugin->polling_url)
                 ->json();
-                
+
             $this->plugin->update(['data_payload' => $response]);
             $this->data_payload = json_encode($response);
         }
@@ -141,7 +141,7 @@ new class extends Component {
         }
 
         $this->reset(['checked_devices', 'playlist_name', 'selected_weekdays', 'active_from', 'active_until', 'selected_playlist']);
-        Flux::modal('add-plugin')->close();
+        Flux::modal('add-to-playlist')->close();
     }
 
     public function getDevicePlaylists($deviceId)
@@ -187,6 +187,13 @@ HTML;
 </x-trmnl::view>
 HTML;
     }
+
+    public function deletePlugin(): void
+    {
+        abort_unless(auth()->user()->plugins->contains($this->plugin), 403);
+        $this->plugin->delete();
+        $this->redirect(route('plugins.index'));
+    }
 }
 
 ?>
@@ -195,12 +202,24 @@ HTML;
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-semibold dark:text-gray-100">{{$plugin->name}}</h2>
-            <flux:modal.trigger name="add-plugin">
-                <flux:button icon="play" variant="primary">Add to Playlist</flux:button>
-            </flux:modal.trigger>
+
+            <flux:button.group>
+                <flux:modal.trigger name="add-to-playlist">
+                    <flux:button icon="play" variant="primary">Add to Playlist</flux:button>
+                </flux:modal.trigger>
+
+                <flux:dropdown>
+                    <flux:button icon="chevron-down" variant="primary"></flux:button>
+                    <flux:menu>
+                        <flux:modal.trigger name="delete-plugin">
+                            <flux:menu.item icon="trash">Delete Plugin</flux:menu.item>
+                        </flux:modal.trigger>
+                    </flux:menu>
+                </flux:dropdown>
+            </flux:button.group>
         </div>
 
-        <flux:modal name="add-plugin" class="md:w-96">
+        <flux:modal name="add-to-playlist" class="md:w-96">
             <div class="space-y-6">
                 <div>
                     <flux:heading size="lg">Add to Playlist</flux:heading>
@@ -261,6 +280,21 @@ HTML;
             </div>
         </flux:modal>
 
+        <flux:modal name="delete-plugin" class="min-w-[22rem] space-y-6">
+            <div>
+                <flux:heading size="lg">Delete {{ $plugin->name }}?</flux:heading>
+                <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">This will remove this plugin from your account.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <flux:spacer/>
+                <flux:modal.close>
+                    <flux:button variant="ghost">Cancel</flux:button>
+                </flux:modal.close>
+                <flux:button wire:click="deletePlugin" variant="danger">Delete plugin</flux:button>
+            </div>
+        </flux:modal>
+
         <div class="mt-5 mb-5">
             <h3 class="text-xl font-semibold dark:text-gray-100">Settings</h3>
         </div>
@@ -304,12 +338,12 @@ HTML;
                     </div>
 
                     <div class="mb-4">
-                        <flux:textarea 
-                            label="Polling Headers (one per line, format: Header: Value)" 
-                            wire:model="polling_header" 
+                        <flux:textarea
+                            label="Polling Headers (one per line, format: Header: Value)"
+                            wire:model="polling_header"
                             id="polling_header"
-                            class="block mt-1 w-full font-mono" 
-                            name="polling_header" 
+                            class="block mt-1 w-full font-mono"
+                            name="polling_header"
                             rows="3"
                             placeholder="Authorization: Bearer ey.*******&#10;Content-Type: application/json"
                         />
