@@ -313,41 +313,57 @@ HTML;
                     </div>
 
                     <div class="mb-4">
-                        <flux:radio.group wire:model="data_strategy" label="Data Strategy" variant="segmented">
+                        <flux:radio.group wire:model.live="data_strategy" label="Data Strategy" variant="segmented">
                             <flux:radio value="polling" label="Polling"/>
-                            <flux:radio value="webhook" label="Webhook" disabled/>
+                            <flux:radio value="webhook" label="Webhook"/>
                         </flux:radio.group>
                     </div>
 
-                    <div class="mb-4">
-                        <flux:input label="Polling URL" wire:model="polling_url" id="polling_url"
-                                    placeholder="https://example.com/api"
-                                    class="block mt-1 w-full" type="text" name="polling_url" autofocus>
-                            <x-slot name="iconTrailing">
-                                <flux:button size="sm" variant="subtle" icon="cloud-arrow-down" wire:click="updateData"
-                                             tooltip="Fetch data now" class="-mr-1"/>
-                            </x-slot>
-                        </flux:input>
-                    </div>
+                    @if($data_strategy === 'polling')
+                        <div class="mb-4">
+                            <flux:input label="Polling URL" wire:model="polling_url" id="polling_url"
+                                        placeholder="https://example.com/api"
+                                        class="block mt-1 w-full" type="text" name="polling_url" autofocus>
+                                <x-slot name="iconTrailing">
+                                    <flux:button size="sm" variant="subtle" icon="cloud-arrow-down" wire:click="updateData"
+                                                 tooltip="Fetch data now" class="-mr-1"/>
+                                </x-slot>
+                            </flux:input>
+                        </div>
 
-                    <div class="mb-4">
-                        <flux:radio.group wire:model="polling_verb" label="Polling Verb" variant="segmented">
-                            <flux:radio value="get" label="GET"/>
-                            <flux:radio value="post" label="POST"/>
-                        </flux:radio.group>
-                    </div>
+                        <div class="mb-4">
+                            <flux:radio.group wire:model="polling_verb" label="Polling Verb" variant="segmented">
+                                <flux:radio value="get" label="GET"/>
+                                <flux:radio value="post" label="POST"/>
+                            </flux:radio.group>
+                        </div>
 
-                    <div class="mb-4">
-                        <flux:textarea
-                            label="Polling Headers (one per line, format: Header: Value)"
-                            wire:model="polling_header"
-                            id="polling_header"
-                            class="block mt-1 w-full font-mono"
-                            name="polling_header"
-                            rows="3"
-                            placeholder="Authorization: Bearer ey.*******&#10;Content-Type: application/json"
-                        />
-                    </div>
+                        <div class="mb-4">
+                            <flux:textarea
+                                label="Polling Headers (one per line, format: Header: Value)"
+                                wire:model="polling_header"
+                                id="polling_header"
+                                class="block mt-1 w-full font-mono"
+                                name="polling_header"
+                                rows="3"
+                                placeholder="Authorization: Bearer ey.*******&#10;Content-Type: application/json"
+                            />
+                        </div>
+                    @else
+                        <div class="mb-4">
+                            <flux:input
+                                label="Webhook URL"
+                                :value="route('api.custom_plugins.webhook', ['plugin_uuid' => $plugin->uuid])"
+                                class="block mt-1 w-full font-mono"
+                                readonly
+                                copyable
+                            >
+                            </flux:input>
+                        </div>
+                        <div>
+                            <p>Send JSON payload with key <code>merge_variables</code> to the webhook URL. The payload will be merged with the plugin data.</p>
+                        </div>
+                            @endif
 
                     <div class="flex">
                         <flux:spacer/>

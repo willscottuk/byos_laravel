@@ -194,3 +194,24 @@ Route::post('/display/update', function (Request $request) {
 })
     ->name('display.update')
     ->middleware('auth:sanctum', 'ability:update-screen');
+
+Route::post('custom_plugins/{plugin_uuid}', function (string $plugin_uuid) {
+    $plugin = \App\Models\Plugin::where('uuid', $plugin_uuid)->firstOrFail();
+
+    // Check if plugin uses webhook strategy
+    if ($plugin->data_strategy !== 'webhook') {
+        return response()->json(['error' => 'Plugin does not use webhook strategy'], 400);
+    }
+
+    $request = request();
+    if (! $request->has('merge_variables')) {
+        return response()->json(['error' => 'Request must contain merge_variables key'], 400);
+    }
+
+    $plugin->update([
+        'data_payload' => $request->input('merge_variables'),
+        'data_payload_updated_at' => now(),
+    ]);
+
+    return response()->json(['message' => 'Data updated successfully']);
+})->name('api.custom_plugins.webhook');
