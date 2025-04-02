@@ -40,6 +40,7 @@ FROM base AS production
 
 # Copy the assets from the assets image
 COPY --chown=www-data:www-data --from=assets /app/public/build /var/www/html/public/build
+COPY --chown=www-data:www-data --from=assets /app/node_modules /var/www/html/node_modules
 
 # Drop back to the www-data user
 USER www-data
