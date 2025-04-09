@@ -22,7 +22,7 @@
         </flux:navbar.item>
         <flux:navbar.item icon="puzzle-piece" href="{{ route('plugins.index') }}" wire:navigate
                           :current="request()->routeIs(['plugins.index', 'plugins.markup', 'plugins.api', 'plugins.receipt'])">
-            Plugins
+            Plugins &amp; Receipts
         </flux:navbar.item>
         <flux:navbar.item icon="play" href="{{ route('playlists.index') }}" wire:navigate
                           :current="request()->routeIs('playlists.index')">
@@ -102,7 +102,7 @@
             </flux:navbar.item>
             <flux:navbar.item icon="puzzle-piece" href="{{ route('plugins.index') }}" wire:navigate
                               :current="request()->routeIs('plugins.index')" class="m-2">
-                Plugins
+                Plugins &amp; Receipts
             </flux:navbar.item>
             <flux:navbar.item icon="play" href="{{ route('playlists.index') }}" wire:navigate
                               :current="request()->routeIs('playlists.index')" class="m-2">

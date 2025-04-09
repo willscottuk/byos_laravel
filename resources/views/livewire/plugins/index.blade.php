@@ -71,17 +71,17 @@ new class extends Component {
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-semibold dark:text-gray-100">Plugins</h2>
+            <h2 class="text-2xl font-semibold dark:text-gray-100">Plugins &amp; Receipts</h2>
 
             <flux:button.group>
                 <flux:modal.trigger name="add-plugin">
-                    <flux:button icon="plus" variant="primary">Add Plugin</flux:button>
+                    <flux:button icon="plus" variant="primary">Add Receipt</flux:button>
                 </flux:modal.trigger>
 
                 <flux:dropdown>
                     <flux:button icon="chevron-down" variant="primary"></flux:button>
                     <flux:menu>
-                        <flux:menu.item icon="beaker" wire:click="seedExamplePlugins">Seed Example Plugins</flux:menu.item>
+                        <flux:menu.item icon="beaker" wire:click="seedExamplePlugins">Seed Example Receipts</flux:menu.item>
                         {{--                        <flux:menu.separator/>--}}
                         {{--                        <flux:modal.trigger name="import-receipt">--}}
                         {{--                            <flux:menu.item icon="paper-clip">Import Receipt ZIP File</flux:menu.item>--}}
@@ -100,7 +100,7 @@ new class extends Component {
         <flux:modal name="add-plugin" class="md:w-96">
             <div class="space-y-6">
                 <div>
-                    <flux:heading size="lg">Add Plugin</flux:heading>
+                    <flux:heading size="lg">Add Receipt</flux:heading>
                 </div>
 
                 <form wire:submit="addPlugin">
@@ -142,7 +142,7 @@ new class extends Component {
 
                     <div class="flex">
                         <flux:spacer/>
-                        <flux:button type="submit" variant="primary">Create Plugin</flux:button>
+                        <flux:button type="submit" variant="primary">Create Receipt</flux:button>
                     </div>
                 </form>
             </div>

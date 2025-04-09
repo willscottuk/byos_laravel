@@ -142,7 +142,9 @@ HTML;
 
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-semibold dark:text-gray-100">Markup</h2>
+        <h2 class="text-2xl font-semibold dark:text-gray-100">Markup
+            <flux:badge size="sm" class="ml-2">Plugin</flux:badge>
+        </h2>
 
         {{--        <div class="flex justify-between items-center mb-6">--}}
 

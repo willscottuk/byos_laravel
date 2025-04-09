@@ -201,7 +201,9 @@ HTML;
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-semibold dark:text-gray-100">{{$plugin->name}}</h2>
+            <h2 class="text-2xl font-semibold dark:text-gray-100">{{$plugin->name}}
+                <flux:badge size="sm" class="ml-2">Receipt</flux:badge>
+            </h2>
 
             <flux:button.group>
                 <flux:modal.trigger name="add-to-playlist">
