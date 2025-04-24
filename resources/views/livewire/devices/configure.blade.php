@@ -211,7 +211,7 @@ new class extends Component {
                 @php
                     $current_image_uuid =$device->current_screen_image;
                     if($current_image_uuid) {
-                        file_exists('storage/images/generated/' . $current_image_uuid . '.png') ? $file_extension = 'png' : $file_extension = 'bmp';
+                        $file_extension = file_exists(storage_path('app/public/images/generated/' . $current_image_uuid . '.png')) ? 'png' : 'bmp';
                         $current_image_path = 'storage/images/generated/' . $current_image_uuid . '.' . $file_extension;
                     } else {
                         $current_image_path = 'storage/images/setup-logo.bmp';

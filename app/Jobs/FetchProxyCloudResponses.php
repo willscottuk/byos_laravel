@@ -44,13 +44,17 @@ class FetchProxyCloudResponses implements ShouldQueue
                     $imageUrl = $response->json('image_url');
                     $filename = $response->json('filename');
 
+                    parse_str(parse_url($imageUrl)['query'] ?? '', $queryParams);
+                    $imageType = urldecode($queryParams['response-content-type'] ?? 'image/bmp');
+                    $imageExtension = $imageType === 'image/png' ? 'png' : 'bmp';
+
                     \Log::info('Response data: '.$imageUrl);
                     if (isset($imageUrl)) {
                         try {
                             $imageContents = Http::get($imageUrl)->body();
-                            if (! Storage::disk('public')->exists("images/generated/{$filename}.bmp")) {
+                            if (! Storage::disk('public')->exists("images/generated/{$filename}.{$imageExtension}")) {
                                 Storage::disk('public')->put(
-                                    "images/generated/{$filename}.bmp",
+                                    "images/generated/{$filename}.{$imageExtension}",
                                     $imageContents
                                 );
                             }
