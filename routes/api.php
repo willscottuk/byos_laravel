@@ -75,10 +75,8 @@ Route::get('/display', function (Request $request) {
     } else {
         if (file_exists(storage_path('app/public/images/generated/'.$image_uuid.'.bmp'))) {
             $image_path = 'images/generated/'.$image_uuid.'.bmp';
-            $filename = basename($image_path);
         } elseif (file_exists(storage_path('app/public/images/generated/'.$image_uuid.'.png'))) {
             $image_path = 'images/generated/'.$image_uuid.'.png';
-            $filename = basename($image_path);
         } else {
             $image_path = 'images/generated/'.$image_uuid.'.bmp';
         }
