@@ -236,9 +236,9 @@ new class extends Component {
                                 <span class="dark:text-zinc-200">{{$device->last_firmware_version}}</span>
                             </flux:tooltip>
                         @endif
-                        @if($device->wifiStrengh)
+                        @if($device->wifiStrength)
                             <flux:separator vertical/>
-                            <x-responsive-icons.wifi :strength="$device->wifiStrengh" :rssi="$device->last_rssi_level"
+                            <x-responsive-icons.wifi :strength="$device->wifiStrength" :rssi="$device->last_rssi_level"
                                                      class="dark:text-zinc-200"/>
                         @endif
                         @if($device->batteryPercent)

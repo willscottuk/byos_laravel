@@ -39,7 +39,7 @@ class Device extends Model
         return round($percent);
     }
 
-    public function getWifiStrenghAttribute()
+    public function getWifiStrengthAttribute()
     {
         $rssi = $this->last_rssi_level;
         if ($rssi >= 0) {

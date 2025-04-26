@@ -209,10 +209,8 @@ Route::get('/display/status', function (Request $request) {
     $deviceId = $request['device_id'];
     abort_unless($request->user()->devices->contains($deviceId), 403);
 
-    $device = Device::where('id', $deviceId)->get()->first();
-
     return response()->json(
-        $device->only([
+        Device::find($deviceId)->only([
             'id',
             'mac_address',
             'name',
@@ -221,7 +219,7 @@ Route::get('/display/status', function (Request $request) {
             'last_battery_voltage',
             'last_firmware_version',
             'battery_percent',
-            'wifi_strengh',
+            'wifi_strength',
             'current_screen_image',
             'default_refresh_interval',
             'updated_at',

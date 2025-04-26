@@ -46,7 +46,7 @@ test('wifi strength is determined correctly', function () {
             'last_rssi_level' => $case['rssi'],
         ]);
 
-        expect($device->wifi_strengh)->toBe($case['expected'])
+        expect($device->wifi_strength)->toBe($case['expected'])
             ->and($device->last_rssi_level)->toBe($case['rssi']);
     }
 });
