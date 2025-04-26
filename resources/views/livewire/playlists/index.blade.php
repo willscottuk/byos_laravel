@@ -179,7 +179,7 @@ new class extends Component {
                                             <tr>
                                                 <th class="py-3 px-3 first:pl-0 last:pr-0 text-left text-sm font-medium text-zinc-800 dark:text-white"
                                                     data-flux-column>
-                                                    <div class="whitespace-nowrap flex">Plugin / Receipt</div>
+                                                    <div class="whitespace-nowrap flex">Plugin / Recipe</div>
                                                 </th>
                                                 <th class="py-3 px-3 first:pl-0 last:pr-0 text-left text-sm font-medium text-zinc-800 dark:text-white"
                                                     data-flux-column>

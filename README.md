@@ -3,7 +3,7 @@
 [![tests](https://github.com/usetrmnl/byos_laravel/actions/workflows/test.yml/badge.svg)](https://github.com/usetrmnl/byos_laravel/actions/workflows/test.yml)
 
 TRMNL BYOS Laravel is a self-hostable implementation of a TRMNL server, built with Laravel.
-It enables you to manage TRMNL devices, generate screens dynamically, and can act as a proxy for the native cloud service (native plugins, receipts).
+It enables you to manage TRMNL devices, generate screens dynamically, and can act as a proxy for the native cloud service (native plugins, recipes).
 Inspired by [usetrmnl/byos_sinatra](https://github.com/usetrmnl/byos_sinatra).
 
 If you are looking for a Laravel package designed to streamline the development of both public and private TRMNL plugins, check out [bnussbau/trmnl-laravel](https://github.com/bnussbau/laravel-trmnl).
@@ -116,10 +116,10 @@ Login with user / password `admin@example.com` / `admin@example.com`
 
 ### Demo Plugins
 
-Run the ExampleReceiptsSeeder to seed the database with example plugins:
+Run the ExampleRecipesSeeder to seed the database with example plugins:
 
 ```bash
-php artisan db:seed --class=ExampleReceiptsSeeder
+php artisan db:seed --class=ExampleRecipesSeeder
 ```
 
 * Zen Quotes

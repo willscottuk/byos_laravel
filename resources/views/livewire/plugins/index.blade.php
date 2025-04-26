@@ -60,8 +60,8 @@ new class extends Component {
 
     public function seedExamplePlugins(): void
     {
-//        \Artisan::call('db:seed', ['--class' => 'ExampleReceiptsSeeder']);
-        \Artisan::call(\App\Console\Commands\ExampleReceiptsSeederCommand::class, ['user_id' => auth()->id()]);
+//        \Artisan::call('db:seed', ['--class' => 'ExampleRecipesSeeder']);
+        \Artisan::call(\App\Console\Commands\ExampleRecipesSeederCommand::class, ['user_id' => auth()->id()]);
 
     }
 
@@ -71,20 +71,20 @@ new class extends Component {
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-semibold dark:text-gray-100">Plugins &amp; Receipts</h2>
+            <h2 class="text-2xl font-semibold dark:text-gray-100">Plugins &amp; Recipes</h2>
 
             <flux:button.group>
                 <flux:modal.trigger name="add-plugin">
-                    <flux:button icon="plus" variant="primary">Add Receipt</flux:button>
+                    <flux:button icon="plus" variant="primary">Add Recipe</flux:button>
                 </flux:modal.trigger>
 
                 <flux:dropdown>
                     <flux:button icon="chevron-down" variant="primary"></flux:button>
                     <flux:menu>
-                        <flux:menu.item icon="beaker" wire:click="seedExamplePlugins">Seed Example Receipts</flux:menu.item>
+                        <flux:menu.item icon="beaker" wire:click="seedExamplePlugins">Seed Example Recipes</flux:menu.item>
                         {{--                        <flux:menu.separator/>--}}
-                        {{--                        <flux:modal.trigger name="import-receipt">--}}
-                        {{--                            <flux:menu.item icon="paper-clip">Import Receipt ZIP File</flux:menu.item>--}}
+                        {{--                        <flux:modal.trigger name="import-recipe">--}}
+                        {{--                            <flux:menu.item icon="paper-clip">Import Recipe ZIP File</flux:menu.item>--}}
                         {{--                        </flux:modal.trigger>--}}
                         {{--                        <flux:menu.separator/>--}}
                         {{--                        <flux:modal.trigger name="add-native-plugin">--}}
@@ -100,7 +100,7 @@ new class extends Component {
         <flux:modal name="add-plugin" class="md:w-96">
             <div class="space-y-6">
                 <div>
-                    <flux:heading size="lg">Add Receipt</flux:heading>
+                    <flux:heading size="lg">Add Recipe</flux:heading>
                 </div>
 
                 <form wire:submit="addPlugin">
@@ -142,7 +142,7 @@ new class extends Component {
 
                     <div class="flex">
                         <flux:spacer/>
-                        <flux:button type="submit" variant="primary">Create Receipt</flux:button>
+                        <flux:button type="submit" variant="primary">Create Recipe</flux:button>
                     </div>
                 </form>
             </div>
@@ -152,7 +152,7 @@ new class extends Component {
             @foreach($plugins as $plugin)
                 <div
                     class="rounded-xl border bg-white dark:bg-stone-950 dark:border-stone-800 text-stone-800 shadow-xs">
-                    <a href="{{ ($plugin['detail_view_route']) ? route($plugin['detail_view_route']) : route('plugins.receipt', ['plugin' => $plugin['id']]) }}"
+                    <a href="{{ ($plugin['detail_view_route']) ? route($plugin['detail_view_route']) : route('plugins.recipe', ['plugin' => $plugin['id']]) }}"
                        class="block">
                         <div class="flex items-center space-x-4 px-10 py-8">
                             <flux:icon name="{{$plugin['flux_icon_name'] ?? 'puzzle-piece'}}"

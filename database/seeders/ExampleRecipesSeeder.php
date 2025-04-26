@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Plugin;
 use Illuminate\Database\Seeder;
 
-class ExampleReceiptsSeeder extends Seeder
+class ExampleRecipesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -24,7 +24,7 @@ class ExampleReceiptsSeeder extends Seeder
                 'polling_verb' => 'get',
                 'polling_header' => null,
                 'render_markup' => null,
-                'render_markup_view' => 'receipts.train',
+                'render_markup_view' => 'recipes.train',
                 'detail_view_route' => null,
                 'icon_url' => null,
                 'flux_icon_name' => 'train-front',
@@ -43,7 +43,7 @@ class ExampleReceiptsSeeder extends Seeder
                 'polling_verb' => 'get',
                 'polling_header' => null,
                 'render_markup' => null,
-                'render_markup_view' => 'receipts.weather',
+                'render_markup_view' => 'recipes.weather',
                 'detail_view_route' => null,
                 'icon_url' => null,
                 'flux_icon_name' => 'sun',
@@ -62,7 +62,7 @@ class ExampleReceiptsSeeder extends Seeder
                 'polling_verb' => 'get',
                 'polling_header' => null,
                 'render_markup' => null,
-                'render_markup_view' => 'receipts.zen',
+                'render_markup_view' => 'recipes.zen',
                 'detail_view_route' => null,
                 'icon_url' => null,
                 'flux_icon_name' => 'chat-bubble-bottom-center',
@@ -81,7 +81,7 @@ class ExampleReceiptsSeeder extends Seeder
                 'polling_verb' => 'get',
                 'polling_header' => null,
                 'render_markup' => null,
-                'render_markup_view' => 'receipts.day-in-history',
+                'render_markup_view' => 'recipes.day-in-history',
                 'detail_view_route' => null,
                 'icon_url' => null,
                 'flux_icon_name' => 'calendar',
@@ -100,7 +100,7 @@ class ExampleReceiptsSeeder extends Seeder
                 'polling_verb' => 'get',
                 'polling_header' => 'Authorization: Bearer YOUR_API_KEY',
                 'render_markup' => null,
-                'render_markup_view' => 'receipts.home-assistant',
+                'render_markup_view' => 'recipes.home-assistant',
                 'detail_view_route' => null,
                 'icon_url' => null,
                 'flux_icon_name' => 'thermometer',

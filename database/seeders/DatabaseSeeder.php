@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             // Plugin::factory(3)->create();
 
             $this->call([
-                ExampleReceiptsSeeder::class,
+                ExampleRecipesSeeder::class,
             ]);
         }
     }
