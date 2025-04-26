@@ -201,6 +201,36 @@ Route::post('/display/update', function (Request $request) {
     ->name('display.update')
     ->middleware('auth:sanctum', 'ability:update-screen');
 
+Route::get('/display/status', function (Request $request) {
+    $request->validate([
+        'device_id' => 'required|exists:devices,id',
+    ]);
+
+    $deviceId = $request['device_id'];
+    abort_unless($request->user()->devices->contains($deviceId), 403);
+
+    $device = Device::where('id', $deviceId)->get()->first();
+
+    return response()->json(
+        $device->only([
+            'id',
+            'mac_address',
+            'name',
+            'friendly_id',
+            'last_rssi_level',
+            'last_battery_voltage',
+            'last_firmware_version',
+            'battery_percent',
+            'wifi_strengh',
+            'current_screen_image',
+            'default_refresh_interval',
+            'updated_at',
+        ]),
+    );
+})
+    ->name('display.status')
+    ->middleware('auth:sanctum');
+
 Route::post('custom_plugins/{plugin_uuid}', function (string $plugin_uuid) {
     $plugin = \App\Models\Plugin::where('uuid', $plugin_uuid)->firstOrFail();
 

@@ -74,5 +74,20 @@ new class extends Component {
                 </div>
             </div>
         </div>
+
+        <div class="mt-6">
+            <p>
+                <flux:badge>GET</flux:badge>
+                <span class="ml-2 font-mono">{{ route('display.status') }}?device_id={{ $selected_device }}</span>
+            </p>
+            <div class="mt-4">
+                <h3 class="text-lg">Headers</h3>
+                <div>Authorization <span class="ml-2 font-mono">Bearer {{$token ?? '**********'}}</span>
+                    <flux:button variant="subtle" size="xs" class="mt-2" wire:click="regenerateToken()">
+                        Regenerate Token
+                    </flux:button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

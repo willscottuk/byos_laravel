@@ -243,3 +243,69 @@ test('update_firmware flag is only returned once', function () {
     $device->refresh();
     expect($device->proxy_cloud_response['update_firmware'])->toBeFalse();
 });
+
+test('authenticated user can fetch device status', function () {
+    $user = User::factory()->create();
+    $device = Device::factory()->create([
+        'user_id' => $user->id,
+        'mac_address' => '00:11:22:33:44:55',
+        'name' => 'Test Device',
+        'friendly_id' => 'test-device',
+        'last_rssi_level' => -70,
+        'last_battery_voltage' => 3.8,
+        'last_firmware_version' => '1.0.0',
+        'current_screen_image' => 'test-image',
+        'default_refresh_interval' => 900,
+    ]);
+
+    Sanctum::actingAs($user);
+
+    $response = $this->getJson('/api/display/status?device_id='.$device->id);
+
+    $response->assertOk()
+        ->assertJson([
+            'id' => $device->id,
+            'mac_address' => '00:11:22:33:44:55',
+            'name' => 'Test Device',
+            'friendly_id' => 'test-device',
+            'last_rssi_level' => -70,
+            'last_battery_voltage' => 3.8,
+            'last_firmware_version' => '1.0.0',
+            'battery_percent' => 67,
+            'wifi_strength' => 2,
+            'current_screen_image' => 'test-image',
+            'default_refresh_interval' => 900,
+        ]);
+});
+
+test('user cannot fetch status for devices they do not own', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+    $device = Device::factory()->create(['user_id' => $otherUser->id]);
+
+    Sanctum::actingAs($user);
+
+    $response = $this->getJson('/api/display/status?device_id='.$device->id);
+
+    $response->assertForbidden();
+});
+
+test('display status endpoint requires device_id parameter', function () {
+    $user = User::factory()->create();
+    Sanctum::actingAs($user);
+
+    $response = $this->getJson('/api/display/status');
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['device_id']);
+});
+
+test('display status endpoint requires valid device_id', function () {
+    $user = User::factory()->create();
+    Sanctum::actingAs($user);
+
+    $response = $this->getJson('/api/display/status?device_id=999');
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['device_id']);
+});
