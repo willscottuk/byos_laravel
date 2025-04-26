@@ -326,7 +326,7 @@ new class extends Component {
                             </div>
 
                             <div class="mb-4">
-                                <flux:checkbox.group wire:model="selected_weekdays" label="Active Days">
+                                <flux:checkbox.group wire:model="selected_weekdays" label="Active Days (optional)">
                                     <flux:checkbox label="Monday" value="1"/>
                                     <flux:checkbox label="Tuesday" value="2"/>
                                     <flux:checkbox label="Wednesday" value="3"/>
@@ -338,11 +338,11 @@ new class extends Component {
                             </div>
 
                             <div class="mb-4">
-                                <flux:input type="time" label="Active From" wire:model="active_from"/>
+                                <flux:input type="time" label="Active From (optional)" wire:model="active_from"/>
                             </div>
 
                             <div class="mb-4">
-                                <flux:input type="time" label="Active Until" wire:model="active_until"/>
+                                <flux:input type="time" label="Active Until (optional)" wire:model="active_until"/>
                             </div>
 
                             <div class="mb-4">
@@ -399,7 +399,7 @@ new class extends Component {
                                     </div>
 
                                     <div class="mb-4">
-                                        <flux:checkbox.group wire:model="selected_weekdays" label="Active Days">
+                                        <flux:checkbox.group wire:model="selected_weekdays" label="Active Days (optional)">
                                             <flux:checkbox label="Monday" value="1"/>
                                             <flux:checkbox label="Tuesday" value="2"/>
                                             <flux:checkbox label="Wednesday" value="3"/>
@@ -411,11 +411,11 @@ new class extends Component {
                                     </div>
 
                                     <div class="mb-4">
-                                        <flux:input type="time" label="Active From" wire:model="active_from"/>
+                                        <flux:input type="time" label="Active From (optional)" wire:model="active_from"/>
                                     </div>
 
                                     <div class="mb-4">
-                                        <flux:input type="time" label="Active Until" wire:model="active_until"/>
+                                        <flux:input type="time" label="Active Until (optional)" wire:model="active_until"/>
                                     </div>
 
                                     <div class="mb-4">
@@ -473,7 +473,7 @@ new class extends Component {
                                                      wire:click="togglePlaylistItemActive({{ $item->id }})"
                                                      :checked="$item->is_active"/>
                                     </td>
-                                    <td class="py-3 px-3 first:pl-0 last:pr-0 text-sm whitespace-nowrap text-right">
+                                    <td class="py-3 px-3 first:pl-0 last:pr-0 text-sm whitespace-nowrap">
                                         <div class="flex justify-end gap-2">
                                             @if(!$loop->first)
                                                 <flux:button wire:click="movePlaylistItemUp({{ $item->id }})"

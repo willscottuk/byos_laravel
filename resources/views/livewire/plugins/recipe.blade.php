@@ -253,7 +253,7 @@ HTML;
                             </div>
 
                             <div class="mb-4">
-                                <flux:checkbox.group wire:model="selected_weekdays" label="Active Days">
+                                <flux:checkbox.group wire:model="selected_weekdays" label="Active Days (optional)">
                                     <flux:checkbox label="Monday" value="1"/>
                                     <flux:checkbox label="Tuesday" value="2"/>
                                     <flux:checkbox label="Wednesday" value="3"/>
@@ -265,11 +265,11 @@ HTML;
                             </div>
 
                             <div class="mb-4">
-                                <flux:input type="time" label="Active From" wire:model="active_from"/>
+                                <flux:input type="time" label="Active From (optional)" wire:model="active_from"/>
                             </div>
 
                             <div class="mb-4">
-                                <flux:input type="time" label="Active Until" wire:model="active_until"/>
+                                <flux:input type="time" label="Active Until (optional)" wire:model="active_until"/>
                             </div>
                         @endif
                     @endif
