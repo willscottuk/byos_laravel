@@ -163,6 +163,24 @@ If your environment is local, you can access the server at `http://localhost:456
 - You can grab the TRMNL Mac Address and API Key from the TRMNL Dashboard
 - Alternatively, debug incoming requests to /api/setup to determine them
 
+##### Activate fresh TRMNL Device with Cloud Proxy
+
+1) Setup the TRMNL as in the official docs with the cloud service (connect one of the plugins to later verify it works)
+2) Setup Laravel BYOS in your local network, create a user and login
+3) In Laravel BYOS in the header bar, activate the toggle "Permit Auto-Join"
+4) Connect your TRMNL via USB-C and re-flash in the browser via [https://usetrmnl.com/flash](https://usetrmnl.com/flash)
+5) Go through the setup process again, in the screen where you provide the Wi-Fi credentials there is also option to set the Server URL. Use the local address of your Laravel BYOS
+6) The device should automatically appear in the device list; you can deactivate the "Permit Auto-Join" toggle again.
+7) In the devices list, activate the toggle "☁️ Proxy" for your device. (Make sure that the queue worker is active. In the docker image it should be running automatically.)
+8) As long as no Laravel BYOS plugin is scheduled, the device will show your cloud plugins.
+
+###### Troubleshooting
+
+Make sure that your device has a Developer license, you should be able to verify by calling the `https://trmnl.app/api/display` endpoint.
+
+* [https://docs.usetrmnl.com/go/private-api/introduction](https://docs.usetrmnl.com/go/private-api/introduction)
+* [https://docs.usetrmnl.com/go/private-api/fetch-screen-content](https://docs.usetrmnl.com/go/private-api/fetch-screen-content)
+
 ### ⚙️ Configure Server for Device
 
 #### 📌 Firmware Version 1.4.6 or Newer
