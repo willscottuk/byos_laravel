@@ -139,6 +139,7 @@ php artisan db:seed --class=ExampleRecipesSeeder
 | `REGISTRATION_ENABLED`        | Allow user registration via Webinterface                         | 1                 |
 | `FORCE_HTTPS`                 | If your server handles SSL termination, enforce HTTPS.           | 0                 |
 | `PHP_OPCACHE_ENABLE`          | Enable PHP Opcache                                               | 0                 |
+| `TRMNL_IMAGE_URL_TIMEOUT`     | How long TRMNL waits for a reponse on the display endpoint.      | null (in seconds) |
 
 #### Login
 
