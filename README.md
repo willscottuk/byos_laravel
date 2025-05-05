@@ -132,14 +132,14 @@ php artisan db:seed --class=ExampleRecipesSeeder
 
 #### Environment Variables
 
-| environment                   | description                                                      | default           |
+| Environment Variable          | Description                                                      | Default           |
 |-------------------------------|------------------------------------------------------------------|-------------------|
 | `TRMNL_PROXY_BASE_URL`        | Base URL of the native TRMNL service                             | https://trmnl.app |
 | `TRMNL_PROXY_REFRESH_MINUTES` | How often should the server fetch new images from native service | 15                |
 | `REGISTRATION_ENABLED`        | Allow user registration via Webinterface                         | 1                 |
 | `FORCE_HTTPS`                 | If your server handles SSL termination, enforce HTTPS.           | 0                 |
 | `PHP_OPCACHE_ENABLE`          | Enable PHP Opcache                                               | 0                 |
-| `TRMNL_IMAGE_URL_TIMEOUT`     | How long TRMNL waits for a reponse on the display endpoint.      | null (in seconds) |
+| `TRMNL_IMAGE_URL_TIMEOUT`     | How long TRMNL waits for a response on the display endpoint.     | 15 (seconds)      |
 
 #### Login
 
