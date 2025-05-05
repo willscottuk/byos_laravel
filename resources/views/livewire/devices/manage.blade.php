@@ -19,10 +19,15 @@ new class extends Component {
 
     public $friendly_id;
 
+    public $is_mirror = false;
+
+    public $mirror_device_id = null;
+
     protected $rules = [
         'mac_address' => 'required',
         'api_key' => 'required',
         'default_refresh_interval' => 'required|integer',
+        'mirror_device_id' => 'required_if:is_mirror,true',
     ];
 
     public function mount()
@@ -35,6 +40,13 @@ new class extends Component {
     {
         $this->validate();
 
+        if ($this->is_mirror) {
+            // Verify the mirror device belongs to the user and is not a mirror device itself
+            $mirrorDevice = auth()->user()->devices()->find($this->mirror_device_id);
+            abort_unless($mirrorDevice, 403, 'Invalid mirror device selected');
+            abort_if($mirrorDevice->mirror_device_id !== null, 403, 'Cannot mirror a device that is already a mirror device');
+        }
+
         Device::create([
             'name' => $this->name,
             'mac_address' => $this->mac_address,
@@ -42,6 +54,7 @@ new class extends Component {
             'default_refresh_interval' => $this->default_refresh_interval,
             'friendly_id' => $this->friendly_id,
             'user_id' => auth()->id(),
+            'mirror_device_id' => $this->is_mirror ? $this->mirror_device_id : null,
         ]);
 
         $this->reset();
@@ -123,6 +136,24 @@ new class extends Component {
                                         class="block mt-1 w-full" type="number" name="default_refresh_interval"
                                         autofocus/>
                         </div>
+
+                        <div class="mb-4">
+                            <flux:checkbox wire:model.live="is_mirror" label="Mirrors Device" />
+                        </div>
+
+                        @if($is_mirror)
+                            <div class="mb-4">
+                                <flux:select wire:model="mirror_device_id" label="Select Device to Mirror">
+                                    <flux:select.option value="">Select a device</flux:select.option>
+                                    @foreach(auth()->user()->devices->where('mirror_device_id', null) as $device)
+                                        <flux:select.option value="{{ $device->id }}">
+                                            {{ $device->name }} ({{ $device->friendly_id }})
+                                        </flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                            </div>
+                        @endif
+
                         <div class="flex">
                             <flux:spacer/>
                             <flux:button type="submit" variant="primary">Create Device</flux:button>
@@ -193,7 +224,9 @@ new class extends Component {
                                     position="bottom">
                                     <flux:switch wire:model.live="proxy_cloud"
                                                  wire:click="toggleProxyCloud({{ $device->id }})"
-                                                 :checked="$device->proxy_cloud" label="☁️ Proxy"/>
+                                                 :checked="$device->proxy_cloud" 
+                                                 :disabled="$device->mirror_device_id !== null"
+                                                 label="☁️ Proxy"/>
                                 </flux:tooltip>
                             </div>
                         </td>

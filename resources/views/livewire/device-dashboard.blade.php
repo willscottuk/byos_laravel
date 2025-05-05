@@ -44,7 +44,20 @@ new class extends Component {
 
                             <h1 class="text-xl font-medium dark:text-zinc-200">{{ $device->name }}</h1>
                             <p class="text-sm dark:text-zinc-400">{{$device->mac_address}}</p>
-                            @if($current_image_path)
+                            @if($device->mirror_device_id)
+                                <flux:separator class="mt-2 mb-4"/>
+                                <flux:callout variant="info">
+                                    <div class="flex items-center gap-2">
+                                        <flux:icon name="link" class="h-5 w-5"/>
+                                        <div>
+                                            This device is mirrored from 
+                                            <a href="{{ route('devices.configure', $device->mirrorDevice) }}" class="font-medium hover:underline">
+                                                {{ $device->mirrorDevice->name }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </flux:callout>
+                            @elseif($current_image_path)
                                 <flux:separator class="mt-2 mb-4"/>
                                 <img src="{{ asset($current_image_path) }}" alt="Current Image"/>
                             @endif

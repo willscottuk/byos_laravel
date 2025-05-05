@@ -6,19 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::table('devices', function (Blueprint $table) {
-            $table->integer('width')->nullable()->default(800)->after('api_key');
-            $table->integer('height')->nullable()->default(480)->after('width');
+            $table->foreignId('mirror_device_id')->nullable()->constrained('devices')->nullOnDelete();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('devices', function (Blueprint $table) {
-            $table->dropColumn('width');
-            $table->dropColumn('height');
+            $table->dropForeign(['mirror_device_id']);
+            $table->dropColumn('mirror_device_id');
         });
     }
 };

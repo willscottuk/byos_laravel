@@ -4,6 +4,7 @@ use App\Jobs\GenerateScreenJob;
 use App\Models\Device;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
@@ -41,34 +42,37 @@ Route::get('/display', function (Request $request) {
         'last_firmware_version' => $request->header('fw-version'),
     ]);
 
-    $refreshTimeOverride = null;
-    // Skip if cloud proxy is enabled for device
-    if (! $device->proxy_cloud || $device->getNextPlaylistItem()) {
-        $playlistItem = $device->getNextPlaylistItem();
+    // Get current screen image from mirror device or continue if not available
+    if (! $image_uuid = $device->mirrorDevice?->current_screen_image) {
+        $refreshTimeOverride = null;
+        // Skip if cloud proxy is enabled for the device
+        if (! $device->proxy_cloud || $device->getNextPlaylistItem()) {
+            $playlistItem = $device->getNextPlaylistItem();
 
-        if ($playlistItem) {
-            $refreshTimeOverride = $playlistItem->playlist()->first()->refresh_time;
+            if ($playlistItem) {
+                $refreshTimeOverride = $playlistItem->playlist()->first()->refresh_time;
 
-            $plugin = $playlistItem->plugin;
+                $plugin = $playlistItem->plugin;
 
-            // Check and update stale data if needed
-            if ($plugin->isDataStale()) {
-                $plugin->updateDataPayload();
+                // Check and update stale data if needed
+                if ($plugin->isDataStale()) {
+                    $plugin->updateDataPayload();
+                }
+
+                $playlistItem->update(['last_displayed_at' => now()]);
+                if ($plugin->render_markup) {
+                    $markup = Blade::render($plugin->render_markup, ['data' => $plugin->data_payload]);
+                } elseif ($plugin->render_markup_view) {
+                    $markup = view($plugin->render_markup_view, ['data' => $plugin->data_payload])->render();
+                }
+
+                GenerateScreenJob::dispatchSync($device->id, $markup);
             }
-
-            $playlistItem->update(['last_displayed_at' => now()]);
-            if ($plugin->render_markup) {
-                $markup = Blade::render($plugin->render_markup, ['data' => $plugin->data_payload]);
-            } elseif ($plugin->render_markup_view) {
-                $markup = view($plugin->render_markup_view, ['data' => $plugin->data_payload])->render();
-            }
-
-            GenerateScreenJob::dispatchSync($device->id, $markup);
         }
-    }
 
-    $device->refresh();
-    $image_uuid = $device->current_screen_image;
+        $device->refresh();
+        $image_uuid = $device->current_screen_image;
+    }
     if (! $image_uuid) {
         $image_path = 'images/setup-logo.bmp';
         $filename = 'setup-logo.bmp';

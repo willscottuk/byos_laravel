@@ -312,19 +312,35 @@ new class extends Component {
                 </flux:modal>
 
 
-                @if($current_image_path)
-                    <flux:separator class="mt-6 mb-6" text="Next Screen"/>
-                    <img src="{{ asset($current_image_path) }}" alt="Next Image"/>
+                @if(!$device->mirror_device_id)
+                    @if($current_image_path)
+                        <flux:separator class="mt-6 mb-6" text="Next Screen"/>
+                        <img src="{{ asset($current_image_path) }}" alt="Next Image"/>
+                    @endif
+
+                    <flux:separator class="mt-6 mb-6" text="Playlists"/>
+
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium dark:text-zinc-200">Device Playlists</h3>
+                        <flux:modal.trigger name="create-playlist">
+                            <flux:button icon="plus" variant="primary">Create Playlist</flux:button>
+                        </flux:modal.trigger>
+                    </div>
+                @else
+                    <div class="mt-6 mb-6">
+                        <flux:callout variant="info">
+                            <div class="flex items-center gap-2">
+                                <flux:icon name="link" class="h-5 w-5"/>
+                                <div>
+                                    This device is mirrored from 
+                                    <a href="{{ route('devices.configure', $device->mirrorDevice) }}" class="font-medium hover:underline">
+                                        {{ $device->mirrorDevice->name }}
+                                    </a>
+                                </div>
+                            </div>
+                        </flux:callout>
+                    </div>
                 @endif
-
-                <flux:separator class="mt-6 mb-6" text="Playlists"/>
-
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium dark:text-zinc-200">Device Playlists</h3>
-                    <flux:modal.trigger name="create-playlist">
-                        <flux:button icon="plus" variant="primary">Create Playlist</flux:button>
-                    </flux:modal.trigger>
-                </div>
 
                 <flux:modal name="create-playlist" class="md:w-96">
                     <div class="space-y-6">

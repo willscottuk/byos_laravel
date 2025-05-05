@@ -309,3 +309,45 @@ test('display status endpoint requires valid device_id', function () {
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['device_id']);
 });
+
+test('device can mirror another device', function () {
+    // Create source device with a playlist and image
+    $sourceDevice = Device::factory()->create([
+        'mac_address' => '00:11:22:33:44:55',
+        'api_key' => 'source-api-key',
+        'current_screen_image' => 'source-image',
+    ]);
+
+    // Create mirroring device
+    $mirrorDevice = Device::factory()->create([
+        'mac_address' => 'AA:BB:CC:DD:EE:FF',
+        'api_key' => 'mirror-api-key',
+        'mirror_device_id' => $sourceDevice->id,
+    ]);
+
+    // Make request from mirror device
+    $response = $this->withHeaders([
+        'id' => $mirrorDevice->mac_address,
+        'access-token' => $mirrorDevice->api_key,
+        'rssi' => -70,
+        'battery_voltage' => 3.8,
+        'fw-version' => '1.0.0',
+    ])->get('/api/display');
+
+    $response->assertOk()
+        ->assertJson([
+            'status' => '0',
+            'filename' => 'source-image.bmp',
+            'refresh_rate' => 900,
+            'reset_firmware' => false,
+            'update_firmware' => false,
+            'firmware_url' => null,
+            'special_function' => 'sleep',
+        ]);
+
+    // Verify mirror device stats were updated
+    expect($mirrorDevice->fresh())
+        ->last_rssi_level->toBe(-70)
+        ->last_battery_voltage->toBe(3.8)
+        ->last_firmware_version->toBe('1.0.0');
+});
