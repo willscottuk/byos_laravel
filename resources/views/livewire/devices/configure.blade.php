@@ -13,6 +13,8 @@ new class extends Component {
     public $friendly_id;
     public $mac_address;
     public $default_refresh_interval;
+    public $width;
+    public $height;
 
     // Playlist properties
     public $playlists;
@@ -35,6 +37,8 @@ new class extends Component {
         $this->friendly_id = $device->friendly_id;
         $this->mac_address = $device->mac_address;
         $this->default_refresh_interval = $device->default_refresh_interval;
+        $this->width = $device->width;
+        $this->height = $device->height;
         $this->playlists = $device->playlists()->with('items.plugin')->orderBy('created_at')->get();
 
         return view('livewire.devices.configure', [
@@ -59,6 +63,8 @@ new class extends Component {
             'friendly_id' => 'required|string|max:255',
             'mac_address' => 'required|string|max:255',
             'default_refresh_interval' => 'required|integer|min:1',
+            'width' => 'required|integer|min:1',
+            'height' => 'required|integer|min:1',
         ]);
 
         $this->device->update([
@@ -66,6 +72,8 @@ new class extends Component {
             'friendly_id' => $this->friendly_id,
             'mac_address' => $this->mac_address,
             'default_refresh_interval' => $this->default_refresh_interval,
+            'width' => $this->width,
+            'height' => $this->height,
         ]);
 
         Flux::modal('edit-device')->close();
@@ -271,6 +279,10 @@ new class extends Component {
 
                         <flux:input label="Friendly ID" wire:model="friendly_id"/>
                         <flux:input label="MAC Address" wire:model="mac_address"/>
+                        <div class="flex gap-4">
+                            <flux:input label="Width (px)" wire:model="width" type="number" />
+                            <flux:input label="Height (px)" wire:model="height" type="number"/>
+                        </div>
                         <flux:input label="Default Refresh Interval (seconds)" wire:model="default_refresh_interval"
                                     type="number"/>
 
