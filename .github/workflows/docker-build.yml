@@ -19,6 +19,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -52,3 +56,5 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           target: production
+          build-args: |
+            APP_VERSION=${{ env.VERSION }}

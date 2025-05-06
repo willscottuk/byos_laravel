@@ -130,4 +130,17 @@ return [
     'force_https' => env('FORCE_HTTPS', false),
     'puppeteer_docker' => env('PUPPETEER_DOCKER', false),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | This value is the version of your application, which will be used when
+    | displaying the version number in the UI. This is set during the Docker
+    | build process from the release tag.
+    |
+    */
+
+    'version' => env('APP_VERSION', null),
+
 ];

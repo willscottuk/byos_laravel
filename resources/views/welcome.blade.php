@@ -31,4 +31,10 @@
             </nav>
         @endif
     </header>
+    @auth
+        @if(config('app.version'))
+            <flux:text class="text-xs">Version: <a href="https://github.com/usetrmnl/byos_laravel/releases/"
+                                                   target="_blank">{{ config('app.version') }}</a></flux:text>
+        @endif
+    @endauth
 </x-layouts.auth.card>
