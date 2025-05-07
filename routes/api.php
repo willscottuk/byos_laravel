@@ -233,6 +233,51 @@ Route::get('/display/status', function (Request $request) {
     ->name('display.status')
     ->middleware('auth:sanctum');
 
+Route::get('/current_screen', function (Request $request) {
+    $access_token = $request->header('access-token');
+    $device = Device::where('api_key', $access_token)->first();
+
+    if (! $device) {
+        return response()->json([
+            'status' => 404,
+            'message' => 'Device not found or invalid access token',
+        ], 404);
+    }
+
+    $image_uuid = $device->current_screen_image;
+
+    if (! $image_uuid) {
+        $image_path = 'images/setup-logo.bmp';
+        $filename = 'setup-logo.bmp';
+    } else {
+        if (file_exists(storage_path('app/public/images/generated/'.$image_uuid.'.bmp'))) {
+            $image_path = 'images/generated/'.$image_uuid.'.bmp';
+        } elseif (file_exists(storage_path('app/public/images/generated/'.$image_uuid.'.png'))) {
+            $image_path = 'images/generated/'.$image_uuid.'.png';
+        } else {
+            $image_path = 'images/generated/'.$image_uuid.'.bmp';
+        }
+        $filename = basename($image_path);
+    }
+
+    $response = [
+        'status' => 0,
+        'image_url' => url('storage/'.$image_path),
+        'filename' => $filename,
+        'refresh_rate' => $refreshTimeOverride ?? $device->default_refresh_interval,
+        'reset_firmware' => false,
+        'update_firmware' => false,
+        'firmware_url' => $device->firmware_url,
+        'special_function' => 'sleep',
+    ];
+
+    if (config('services.trmnl.image_url_timeout')) {
+        $response['image_url_timeout'] = config('services.trmnl.image_url_timeout');
+    }
+
+    return response()->json($response);
+});
+
 Route::post('custom_plugins/{plugin_uuid}', function (string $plugin_uuid) {
     $plugin = \App\Models\Plugin::where('uuid', $plugin_uuid)->firstOrFail();
 
