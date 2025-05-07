@@ -330,13 +330,13 @@ new class extends Component {
                     <div class="mt-6 mb-6">
                         <flux:callout variant="info">
                             <div class="flex items-center gap-2">
-                                <flux:icon name="link" class="h-5 w-5"/>
-                                <div>
-                                    This device is mirrored from 
+                                <flux:icon.link class="dark:text-zinc-200"/>
+                                <flux:text>
+                                    This device is mirrored from
                                     <a href="{{ route('devices.configure', $device->mirrorDevice) }}" class="font-medium hover:underline">
                                         {{ $device->mirrorDevice->name }}
                                     </a>
-                                </div>
+                                </flux:text>
                             </div>
                         </flux:callout>
                     </div>
