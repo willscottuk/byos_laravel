@@ -351,3 +351,35 @@ test('device can mirror another device', function () {
         ->last_battery_voltage->toBe(3.8)
         ->last_firmware_version->toBe('1.0.0');
 });
+
+test('device can fetch current screen data', function () {
+    $device = Device::factory()->create([
+        'mac_address' => '00:11:22:33:44:55',
+        'api_key' => 'test-api-key',
+        'current_screen_image' => 'test-image',
+    ]);
+
+    $response = $this->withHeaders([
+        'access-token' => $device->api_key,
+    ])->get('/api/current_screen');
+
+    $response->assertOk()
+        ->assertJson([
+            'status' => '0',
+            'filename' => 'test-image.bmp',
+            'refresh_rate' => 900,
+            'reset_firmware' => false,
+            'update_firmware' => false,
+            'firmware_url' => null,
+            'special_function' => 'sleep',
+        ]);
+});
+
+test('current_screen endpoint requires valid device credentials', function () {
+    $response = $this->withHeaders([
+        'access-token' => 'invalid-token',
+    ])->get('/api/current_screen');
+
+    $response->assertNotFound()
+        ->assertJson(['message' => 'Device not found or invalid access token']);
+});
