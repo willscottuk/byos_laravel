@@ -187,6 +187,21 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::get('/devices', function (Request $request) {
+    $devices = $request->user()->devices()->get([
+        'id',
+        'name',
+        'friendly_id',
+        'mac_address',
+        'last_battery_voltage as battery_voltage',
+        'last_rssi_level as rssi'
+    ]);
+
+    return response()->json([
+        'data' => $devices
+    ]);
+})->middleware('auth:sanctum');
+
 Route::post('/display/update', function (Request $request) {
     $request->validate([
         'device_id' => 'required|exists:devices,id',

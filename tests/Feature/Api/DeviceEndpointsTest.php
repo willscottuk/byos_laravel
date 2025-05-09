@@ -422,3 +422,45 @@ test('current_screen endpoint requires valid device credentials', function () {
     $response->assertNotFound()
         ->assertJson(['message' => 'Device not found or invalid access token']);
 });
+
+test('authenticated user can fetch their devices', function () {
+    $user = User::factory()->create();
+    $devices = Device::factory()->count(2)->create([
+        'user_id' => $user->id,
+        'last_battery_voltage' => 3.72,
+        'last_rssi_level' => -63,
+    ]);
+
+    Sanctum::actingAs($user);
+
+    $response = $this->getJson('/api/devices');
+
+    $response->assertOk()
+        ->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'friendly_id',
+                    'mac_address',
+                    'battery_voltage',
+                    'rssi'
+                ]
+            ]
+        ])
+        ->assertJsonCount(2, 'data');
+
+    // Verify the first device's data
+    $response->assertJson([
+        'data' => [
+            [
+                'id' => $devices[0]->id,
+                'name' => $devices[0]->name,
+                'friendly_id' => $devices[0]->friendly_id,
+                'mac_address' => $devices[0]->mac_address,
+                'battery_voltage' => 3.72,
+                'rssi' => -63
+            ]
+        ]
+    ]);
+});
