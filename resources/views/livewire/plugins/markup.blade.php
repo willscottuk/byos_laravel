@@ -45,6 +45,9 @@ new class extends Component {
     public function renderExample(string $example)
     {
         switch ($example) {
+            case 'helloWorld':
+                $markup = $this->renderHelloWorld();
+                break;
             case 'quote':
                 $markup = $this->renderQuote();
                 break;
@@ -59,6 +62,22 @@ new class extends Component {
                 break;
         }
         $this->blade_code = $markup;
+    }
+
+    public function renderHelloWorld(): string
+    {
+        return <<<HTML
+<x-trmnl::view>
+    <x-trmnl::layout>
+        <x-trmnl::markdown gapSize="large">
+            <x-trmnl::title>TRMNL BYOS Laravel</x-trmnl::title>
+            <x-trmnl::content>“This screen was rendered by BYOS Laravel”</x-trmnl::content>
+            <x-trmnl::label variant="underline">Benjamin Nussbaum</x-trmnl::label>
+        </x-trmnl::markdown>
+    </x-trmnl::layout>
+    <x-trmnl::title-bar/>
+</x-trmnl::view>
+HTML;
     }
 
     public function renderQuote(): string
@@ -151,6 +170,7 @@ HTML;
         <div class="mt-5 mb-5 ">
             <span>Examples</span>
             <div class="text-accent">
+                <a href="#" wire:click="renderExample('helloWorld')" class="text-xl">Hello World</a> |
                 <a href="#" wire:click="renderExample('quote')" class="text-xl">Quote</a> |
                 <a href="#" wire:click="renderExample('trainMonitor')" class="text-xl">Train Monitor</a> |
                 <a href="#" wire:click="renderExample('homeAssistant')" class="text-xl">Temperature Sensors</a>
