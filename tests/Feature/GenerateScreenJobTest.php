@@ -13,7 +13,7 @@ beforeEach(function () {
 
 test('it generates screen images and updates device', function () {
     $device = Device::factory()->create();
-    $job = new GenerateScreenJob($device->id, view('trmnl')->render());
+    $job = new GenerateScreenJob($device->id, null, view('trmnl')->render());
     $job->handle();
 
     // Assert the device was updated with a new image UUID
@@ -39,7 +39,7 @@ test('it cleans up unused images', function () {
     Storage::disk('public')->put('/images/generated/inactive-uuid.bmp', 'test');
 
     // Run a job which will trigger cleanup
-    $job = new GenerateScreenJob($activeDevice->id, '<div>Test</div>');
+    $job = new GenerateScreenJob($activeDevice->id, null, '<div>Test</div>');
     $job->handle();
 
     Storage::disk('public')->assertMissing('/images/generated/uuid-to-be-replaced.png');
@@ -52,7 +52,7 @@ test('it preserves gitignore file during cleanup', function () {
     Storage::disk('public')->put('/images/generated/.gitignore', '*');
 
     $device = Device::factory()->create();
-    $job = new GenerateScreenJob($device->id, '<div>Test</div>');
+    $job = new GenerateScreenJob($device->id, null, '<div>Test</div>');
     $job->handle();
 
     Storage::disk('public')->assertExists('/images/generated/.gitignore');

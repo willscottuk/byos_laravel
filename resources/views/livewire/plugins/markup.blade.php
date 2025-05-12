@@ -33,7 +33,7 @@ new class extends Component {
         try {
             $rendered = Blade::render($this->blade_code);
             foreach ($this->checked_devices as $device) {
-                GenerateScreenJob::dispatchSync($device, $rendered);
+                GenerateScreenJob::dispatchSync($device, null, $rendered);
             }
         } catch (\Exception $e) {
             $this->addError('error', $e->getMessage());

@@ -17,7 +17,6 @@ class Plugin extends Model
         'data_payload' => 'json',
         'data_payload_updated_at' => 'datetime',
         'is_native' => 'boolean',
-        'current_image' => 'string',
     ];
 
     protected static function boot()

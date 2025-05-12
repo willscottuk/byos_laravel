@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Services;
 
 use App\Models\Device;
 use App\Models\Plugin;
@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 use Spatie\Browsershot\Browsershot;
 use Wnx\SidecarBrowsershot\BrowsershotLambda;
 
-class CommonFunctions
+class ImageGenerationService
 {
     public static function generateImage(string $markup): string {
         $uuid = Uuid::uuid4()->toString();
@@ -37,7 +37,7 @@ class CommonFunctions
         }
 
         try {
-            CommonFunctions::convertToBmpImageMagick($pngPath, $bmpPath);
+            ImageGenerationService::convertToBmpImageMagick($pngPath, $bmpPath);
         } catch (\ImagickException $e) {
             throw new \RuntimeException('Failed to convert image to BMP: '.$e->getMessage(), 0, $e);
         }

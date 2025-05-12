@@ -1,7 +1,6 @@
 <?php
 
 use App\Jobs\GenerateScreenJob;
-use App\Jobs\GeneratePluginJob;
 use App\Models\Device;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -47,31 +46,32 @@ Route::get('/display', function (Request $request) {
     // Get current screen image from mirror device or continue if not available
     if (! $image_uuid = $device->mirrorDevice?->current_screen_image) {
         $refreshTimeOverride = null;
-        $nextPlaylistItem = $device->getNextPlaylistItem();
         // Skip if cloud proxy is enabled for the device
-        if (! $device->proxy_cloud && $nextPlaylistItem) {
-            $refreshTimeOverride = $nextPlaylistItem->playlist()->first()->refresh_time;
-            $plugin = $nextPlaylistItem->plugin;
+        if (! $device->proxy_cloud || $device->getNextPlaylistItem()) {
+            $playlistItem = $device->getNextPlaylistItem();
+            if ($playlistItem) {
+                $refreshTimeOverride = $playlistItem->playlist()->first()->refresh_time;
+                $plugin = $playlistItem->plugin;
 
-            // Check and update stale data if needed
-            if ($plugin->isDataStale() || $plugin->current_image == null) {
-                $plugin->updateDataPayload();
+                // Check and update stale data if needed
+                if ($plugin->isDataStale() || $plugin->current_image == null) {
+                    $plugin->updateDataPayload();
 
-                if ($plugin->render_markup) {
-                    $markup = Blade::render($plugin->render_markup, ['data' => $plugin->data_payload]);
-                } elseif ($plugin->render_markup_view) {
-                    $markup = view($plugin->render_markup_view, ['data' => $plugin->data_payload])->render();
+                    if ($plugin->render_markup) {
+                        $markup = Blade::render($plugin->render_markup, ['data' => $plugin->data_payload]);
+                    } elseif ($plugin->render_markup_view) {
+                        $markup = view($plugin->render_markup_view, ['data' => $plugin->data_payload])->render();
+                    }
+
+                    GenerateScreenJob::dispatchSync($device->id, $plugin->id, $markup);
                 }
 
-                GeneratePluginJob::dispatchSync($plugin->id, $markup);
-            }
+                $plugin->refresh();
 
-            $plugin->refresh();
-
-            if ($plugin->current_image != null)
-            {
-                $nextPlaylistItem->update(['last_displayed_at' => now()]);
-                $device->update(['current_screen_image' => $plugin->current_image]);
+                if ($plugin->current_image != null) {
+                    $playlistItem->update(['last_displayed_at' => now()]);
+                    $device->update(['current_screen_image' => $plugin->current_image]);
+                }
             }
         }
 
@@ -198,11 +198,11 @@ Route::get('/devices', function (Request $request) {
         'friendly_id',
         'mac_address',
         'last_battery_voltage as battery_voltage',
-        'last_rssi_level as rssi'
+        'last_rssi_level as rssi',
     ]);
 
     return response()->json([
-        'data' => $devices
+        'data' => $devices,
     ]);
 })->middleware('auth:sanctum');
 
@@ -217,7 +217,7 @@ Route::post('/display/update', function (Request $request) {
 
     $view = Blade::render($request['markup']);
 
-    GenerateScreenJob::dispatchSync($deviceId, $view);
+    GenerateScreenJob::dispatchSync($deviceId, null, $view);
 
     response()->json([
         'message' => 'success',

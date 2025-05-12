@@ -36,8 +36,7 @@ class ScreenGeneratorCommand extends Command
 
             return 1;
         }
-
-        GenerateScreenJob::dispatchSync($deviceId, $markup);
+        GenerateScreenJob::dispatchSync($deviceId, null, $markup);
 
         $this->info('Screen generation job finished.');
 

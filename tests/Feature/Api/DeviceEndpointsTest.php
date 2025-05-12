@@ -469,7 +469,7 @@ test('authenticated user can fetch their devices', function () {
     ]);
 });
 
-test('plugin doesn\'t update image unless required', function () {
+test('plugin caches image until data is stale', function () {
     // Create source device with a playlist
     $device = Device::factory()->create([
         'mac_address' => '55:11:22:33:44:55',
@@ -479,11 +479,11 @@ test('plugin doesn\'t update image unless required', function () {
 
     $plugin = Plugin::factory()->create([
         'name' => 'Zen Quotes',
-        'polling_url' => 'https://zenquotes.io/api/today',
+        'polling_url' => null,
         'data_stale_minutes' => 1,
         'data_strategy' => 'polling',
         'polling_verb' => 'get',
-        'render_markup_view' => 'recipes.zen',
+        'render_markup_view' => 'trmnl',
         'is_native' => false,
         'data_payload_updated_at' => null,
     ]);
@@ -542,4 +542,108 @@ test('plugin doesn\'t update image unless required', function () {
 
     expect($thirdResponse['filename'])
         ->not->toBe($firstResponse['filename']);
+})->skipOnGitHubActions();
+
+test('plugins in playlist are rendered in order', function () {
+    // Create source device with a playlist
+    $device = Device::factory()->create([
+        'mac_address' => '55:11:22:33:44:55',
+        'api_key' => 'source-api-key',
+        'proxy_cloud' => true,
+    ]);
+
+    // Create two plugins
+    $firstPlugin = Plugin::factory()->create([
+        'name' => 'First Plugin',
+        'polling_url' => null,
+        'data_stale_minutes' => 1,
+        'data_strategy' => 'polling',
+        'polling_verb' => 'get',
+        'render_markup_view' => 'trmnl',
+        'is_native' => false,
+        'data_payload_updated_at' => null,
+    ]);
+
+    $secondPlugin = Plugin::factory()->create([
+        'name' => 'Second Plugin',
+        'polling_url' => null,
+        'data_stale_minutes' => 1,
+        'data_strategy' => 'polling',
+        'polling_verb' => 'get',
+        'render_markup_view' => 'trmnl',
+        'is_native' => false,
+        'data_payload_updated_at' => null,
+    ]);
+
+    // Create playlist
+    $playlist = Playlist::factory()->create([
+        'device_id' => $device->id,
+        'name' => 'Two Plugins Test',
+        'is_active' => true,
+        'weekdays' => null,
+        'active_from' => null,
+        'active_until' => null,
+    ]);
+
+    // Add plugins to playlist in specific order
+    PlaylistItem::factory()->create([
+        'playlist_id' => $playlist->id,
+        'plugin_id' => $firstPlugin->id,
+        'order' => 1,
+        'is_active' => true,
+        'last_displayed_at' => null,
+    ]);
+
+    PlaylistItem::factory()->create([
+        'playlist_id' => $playlist->id,
+        'plugin_id' => $secondPlugin->id,
+        'order' => 2,
+        'is_active' => true,
+        'last_displayed_at' => null,
+    ]);
+
+    // First request should show the first plugin
+    $firstResponse = $this->withHeaders([
+        'id' => $device->mac_address,
+        'access-token' => $device->api_key,
+    ])->get('/api/display');
+
+    $firstResponse->assertOk();
+    $firstImageFilename = $firstResponse['filename'];
+    expect($firstImageFilename)->not->toBe('setup-logo.bmp');
+
+    // Get the first plugin's playlist item and verify it was marked as displayed
+    $firstPluginItem = PlaylistItem::where('plugin_id', $firstPlugin->id)->first();
+    expect($firstPluginItem->last_displayed_at)->not->toBeNull();
+
+    // Second request should show the second plugin
+    $secondResponse = $this->withHeaders([
+        'id' => $device->mac_address,
+        'access-token' => $device->api_key,
+        'rssi' => -70,
+        'battery_voltage' => 3.8,
+        'fw-version' => '1.0.0',
+    ])->get('/api/display');
+
+    $secondResponse->assertOk();
+    expect($secondResponse['filename'])
+        ->not->toBe($firstImageFilename)
+        ->not->toBe('setup-logo.bmp');
+
+    // Get the second plugin's playlist item and verify it was marked as displayed
+    $secondPluginItem = PlaylistItem::where('plugin_id', $secondPlugin->id)->first();
+    expect($secondPluginItem->last_displayed_at)->not->toBeNull();
+
+    // Third request should show the first plugin again
+    $thirdResponse = $this->withHeaders([
+        'id' => $device->mac_address,
+        'access-token' => $device->api_key,
+        'rssi' => -70,
+        'battery_voltage' => 3.8,
+        'fw-version' => '1.0.0',
+    ])->get('/api/display');
+
+    $thirdResponse->assertOk();
+    expect($thirdResponse['filename'])
+        ->not->toBe($secondResponse['filename']);
 })->skipOnGitHubActions();
