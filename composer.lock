@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44463d389cf66ee173176c7affb13b41",
+    "content-hash": "fca74b36bf29f417bb5f9aff40ceba2a",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -159,16 +159,16 @@
         },
         {
             "name": "bnussbau/laravel-trmnl",
-            "version": "0.1.6",
+            "version": "0.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/willscottuk/laravel-trmnl.git",
-                "reference": "b22d9c712dc364ceb0330bfc78e919ff2e67a8bb"
+                "reference": "4ae9e32cb77e61ac53934a6163d3f2ad0848dde4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willscottuk/laravel-trmnl/zipball/b22d9c712dc364ceb0330bfc78e919ff2e67a8bb",
-                "reference": "b22d9c712dc364ceb0330bfc78e919ff2e67a8bb",
+                "url": "https://api.github.com/repos/willscottuk/laravel-trmnl/zipball/4ae9e32cb77e61ac53934a6163d3f2ad0848dde4",
+                "reference": "4ae9e32cb77e61ac53934a6163d3f2ad0848dde4",
                 "shasum": ""
             },
             "require": {
@@ -250,7 +250,7 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/willscottuk/laravel-trmnl/tree/0.1.6"
+                "source": "https://github.com/willscottuk/laravel-trmnl/tree/0.1.7"
             },
             "funding": [
                 {
@@ -262,7 +262,7 @@
                     "url": "https://www.buymeacoffee.com/bnussbau"
                 }
             ],
-            "time": "2025-05-25T18:32:24+00:00"
+            "time": "2025-05-25T19:45:11+00:00"
         },
         {
             "name": "brick/math",
