@@ -240,16 +240,16 @@
         },
         {
             "name": "bnussbau/laravel-trmnl",
-            "version": "0.1.8",
+            "version": "0.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/willscottuk/laravel-trmnl.git",
-                "reference": "cddf4809e8e08f105616faf3c20334c51691a58c"
+                "reference": "a6fc84e12a67f475d3adda27a3abb4a2d2999559"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willscottuk/laravel-trmnl/zipball/cddf4809e8e08f105616faf3c20334c51691a58c",
-                "reference": "cddf4809e8e08f105616faf3c20334c51691a58c",
+                "url": "https://api.github.com/repos/willscottuk/laravel-trmnl/zipball/a6fc84e12a67f475d3adda27a3abb4a2d2999559",
+                "reference": "a6fc84e12a67f475d3adda27a3abb4a2d2999559",
                 "shasum": ""
             },
             "require": {
@@ -332,7 +332,7 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/willscottuk/laravel-trmnl/tree/0.1.8"
+                "source": "https://github.com/willscottuk/laravel-trmnl/tree/0.1.9"
             },
             "funding": [
                 {
@@ -344,7 +344,7 @@
                     "url": "https://www.buymeacoffee.com/bnussbau"
                 }
             ],
-            "time": "2025-05-26T10:33:08+00:00"
+            "time": "2025-05-26T10:49:39+00:00"
         },
         {
             "name": "brick/math",
