@@ -404,8 +404,7 @@ HTML;
                     <a href="#" wire:click="renderExample('layout')" class="text-xl">Blank Layout</a>
                 </div>
             @endif
-        </div>
-        @if(!$plugin->render_markup_view)
+            @if(!$plugin->render_markup_view)
             <form wire:submit="saveMarkup">
                 <div class="mb-4">
                     <flux:textarea
@@ -425,6 +424,19 @@ HTML;
                     </flux:button>
                 </div>
             </form>
-        @endif
+            @endif
+        </div>
+        {{-- <flux:separator/>
+        <div class="mt-5 mb-5 ">
+            <h3 class="text-xl font-semibold dark:text-gray-100">Preview</h3>
+            @php
+                if ($plugin->render_markup) {
+                    $previewmarkup = Blade::render($plugin->render_markup, ['data' => $plugin->data_payload]);
+                } elseif ($plugin->render_markup_view) {
+                    $previewmarkup = view($plugin->render_markup_view, ['data' => $plugin->data_payload])->render();
+                }
+                print_r($previewmarkup ?? '<p class="text-gray-500">No preview available. Please add blade code or a view.</p>');
+            @endphp
+        </div> --}}
     </div>
 </div>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Plugin extends Model
@@ -42,6 +43,7 @@ class Plugin extends Model
     public function updateDataPayload(): void
     {
         if ($this->data_strategy === 'polling' && $this->polling_url) {
+            Log::info('Updating data payload for plugin: ' . $this->name);
             // Parse headers from polling_header string
             $headers = ['User-Agent' => 'usetrmnl/byos_laravel', 'Accept' => 'application/json'];
 

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/display', function (Request $request) {
     $mac_address = $request->header('id');
@@ -15,6 +16,13 @@ Route::get('/display', function (Request $request) {
     $device = Device::where('mac_address', $mac_address)
         ->where('api_key', $access_token)
         ->first();
+
+    // Log the request
+    Log::info('Display Request', [
+        'mac_address' => $mac_address,
+        'access_token' => $access_token,
+        'headers' => $request->headers->all(),
+    ]);
 
     if (! $device) {
         // Check if there's a user with assign_new_devices enabled
@@ -30,6 +38,11 @@ Route::get('/display', function (Request $request) {
                 'friendly_id' => Str::random(6),
                 'default_refresh_interval' => 900,
                 'mirror_device_id' => $auto_assign_user->assign_new_device_id,
+            ]);
+            Log::info('New Device Created', [
+                'device_id' => $device->id,
+                'mac_address' => $mac_address,
+                'user_id' => $auto_assign_user->id,
             ]);
         } else {
             return response()->json([
@@ -59,13 +72,21 @@ Route::get('/display', function (Request $request) {
 
                 // Check and update stale data if needed
                 if ($plugin->isDataStale() || $plugin->current_image == null) {
+                    Log::info('Updating plugin data', [
+                        'plugin_id' => $plugin->id,
+                        'device_friendly_id' => $device->friendly_id,
+                    ]);
                     $plugin->updateDataPayload();
-
                     if ($plugin->render_markup) {
                         $markup = Blade::render($plugin->render_markup, ['data' => $plugin->data_payload]);
                     } elseif ($plugin->render_markup_view) {
                         $markup = view($plugin->render_markup_view, ['data' => $plugin->data_payload])->render();
                     }
+
+                    Log::info('Dispatching GenerateScreenJob', [
+                        'device_id' => $device->id,
+                        'plugin_id' => $plugin->id,
+                    ], ['markup' => $markup]);
 
                     GenerateScreenJob::dispatchSync($device->id, $plugin->id, $markup);
                 }
@@ -86,21 +107,23 @@ Route::get('/display', function (Request $request) {
         $image_path = 'images/setup-logo.bmp';
         $filename = 'setup-logo.bmp';
     } else {
-        if (isset($device->last_firmware_version)
+        if (
+            isset($device->last_firmware_version)
             && version_compare($device->last_firmware_version, '1.5.2', '<')
-            && Storage::disk('public')->exists('images/generated/'.$image_uuid.'.bmp')) {
-            $image_path = 'images/generated/'.$image_uuid.'.bmp';
-        } elseif (Storage::disk('public')->exists('images/generated/'.$image_uuid.'.png')) {
-            $image_path = 'images/generated/'.$image_uuid.'.png';
+            && Storage::disk('public')->exists('images/generated/' . $image_uuid . '.bmp')
+        ) {
+            $image_path = 'images/generated/' . $image_uuid . '.bmp';
+        } elseif (Storage::disk('public')->exists('images/generated/' . $image_uuid . '.png')) {
+            $image_path = 'images/generated/' . $image_uuid . '.png';
         } else {
-            $image_path = 'images/generated/'.$image_uuid.'.bmp';
+            $image_path = 'images/generated/' . $image_uuid . '.bmp';
         }
         $filename = basename($image_path);
     }
 
     $response = [
         'status' => 0,
-        'image_url' => url('storage/'.$image_path),
+        'image_url' => url('storage/' . $image_path),
         'filename' => $filename,
         'refresh_rate' => $refreshTimeOverride ?? $device->default_refresh_interval,
         'reset_firmware' => false,
@@ -184,7 +207,7 @@ Route::post('/log', function (Request $request) {
 
     $logs = $request->json('log.logs_array', []);
     foreach ($logs as $log) {
-        \Log::info('Device Log', $log);
+        Log::info('Device Log', $log);
     }
 
     return response()->json([
@@ -276,21 +299,23 @@ Route::get('/current_screen', function (Request $request) {
         $image_path = 'images/setup-logo.bmp';
         $filename = 'setup-logo.bmp';
     } else {
-        if (isset($device->last_firmware_version)
+        if (
+            isset($device->last_firmware_version)
             && version_compare($device->last_firmware_version, '1.5.2', '<')
-            && Storage::disk('public')->exists('images/generated/'.$image_uuid.'.bmp')) {
-            $image_path = 'images/generated/'.$image_uuid.'.bmp';
-        } elseif (Storage::disk('public')->exists('images/generated/'.$image_uuid.'.png')) {
-            $image_path = 'images/generated/'.$image_uuid.'.png';
+            && Storage::disk('public')->exists('images/generated/' . $image_uuid . '.bmp')
+        ) {
+            $image_path = 'images/generated/' . $image_uuid . '.bmp';
+        } elseif (Storage::disk('public')->exists('images/generated/' . $image_uuid . '.png')) {
+            $image_path = 'images/generated/' . $image_uuid . '.png';
         } else {
-            $image_path = 'images/generated/'.$image_uuid.'.bmp';
+            $image_path = 'images/generated/' . $image_uuid . '.bmp';
         }
         $filename = basename($image_path);
     }
 
     $response = [
         'status' => 0,
-        'image_url' => url('storage/'.$image_path),
+        'image_url' => url('storage/' . $image_path),
         'filename' => $filename,
         'refresh_rate' => $refreshTimeOverride ?? $device->default_refresh_interval,
         'reset_firmware' => false,

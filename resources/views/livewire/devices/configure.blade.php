@@ -3,6 +3,7 @@
 use App\Models\Playlist;
 use App\Models\PlaylistItem;
 use Livewire\Volt\Component;
+use Carbon\CarbonInterval;
 
 new class extends Component {
 
@@ -235,11 +236,13 @@ new class extends Component {
                 @endphp
 
                 <div class="flex items-center justify-between gap-4">
+
+
                     <flux:tooltip content="Friendly ID: {{$device->friendly_id}}" position="bottom">
                         <h1 class="text-xl font-medium dark:text-zinc-200">{{ $device->name }}</h1>
                     </flux:tooltip>
                     <div class="flex gap-2">
-                        <flux:tooltip content="Last update" position="bottom">
+                        <flux:tooltip content="Last update. Next expected after {{ CarbonInterval::seconds($device->getCurrentPlaylistItem()->playlist->refresh_time ? $device->getCurrentPlaylistItem()->playlist->refresh_time : $device->default_refresh_interval)->cascade()->forHumans()  ?? '' }}." position="bottom">
                             <span class="dark:text-zinc-200">{{$device->updated_at->diffForHumans()}}</span>
                         </flux:tooltip>
                         <flux:separator vertical/>
@@ -328,8 +331,8 @@ new class extends Component {
 
                 @if(!$device->mirror_device_id)
                     @if($current_image_path)
-                        <flux:separator class="mt-6 mb-6" text="Next Screen"/>
-                        <img src="{{ asset($current_image_path) }}" class="max-h-[480px]" alt="Next Image"/>
+                        <flux:separator class="mt-6 mb-6" text="Current Screen"/>
+                        <img src="{{ asset($current_image_path) }}" class="max-h-[480px]" alt="Current Image"/>
                     @endif
 
                     <flux:separator class="mt-6 mb-6" text="Playlists"/>
@@ -403,18 +406,27 @@ new class extends Component {
                     <div class="mb-6 rounded-lg border dark:border-zinc-700 p-4">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-4">
-                                <h4 class="text-lg font-medium dark:text-zinc-200">{{ $playlist->name }}</h4>
                                 <flux:switch wire:model.live="playlist.is_active"
                                              wire:click="togglePlaylistActive({{ $playlist->id }})"
                                              :checked="$playlist->is_active"/>
+                                <h4 class="text-lg font-medium dark:text-zinc-200">{{ $playlist->name }}</h4>
+
                             </div>
                             <div class="flex items-center gap-4">
                                 <div class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+                                    @if($playlist->isActiveNow())
+                                        <flux:icon name="play-circle"/>
+                                        <span>Active</span>
+                                        <flux:separator vertical/>
+                                        @else
+                                        <flux:icon name="pause-circle" class="text-zinc-400"/>
+                                        <flux:separator vertical/>
+                                    @endif
                                     @if($playlist->weekdays)
                                         <span>{{ implode(', ', collect($playlist->weekdays)->map(fn($day) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][$day])->toArray()) }}</span>
+                                        <flux:separator vertical/>
                                     @endif
                                     @if($playlist->active_from && $playlist->active_until)
-                                        <flux:separator vertical/>
                                         <span>{{ $playlist->active_from->format('H:i') }} - {{ $playlist->active_until->format('H:i') }}</span>
                                     @endif
                                 </div>
@@ -508,12 +520,14 @@ new class extends Component {
                             @foreach($playlist->items->sortBy('order') as $item)
                                 <tr data-flux-row>
                                     <td class="py-3 px-3 first:pl-0 last:pr-0 text-sm whitespace-nowrap text-zinc-500 dark:text-zinc-300">
+                                        <flux:switch wire:model.live="item.is_active"
+                                        wire:click="togglePlaylistItemActive({{ $item->id }})"
+                                         :checked="$item->is_active"/>&nbsp;
                                         {{ $item->plugin->name }}
                                     </td>
                                     <td class="py-3 px-3 first:pl-0 last:pr-0 text-sm whitespace-nowrap text-zinc-500 dark:text-zinc-300">
-                                        <flux:switch wire:model.live="item.is_active"
-                                                     wire:click="togglePlaylistItemActive({{ $item->id }})"
-                                                     :checked="$item->is_active"/>
+
+                                        {{ $item->last_displayed_at ? 'Shown ' . $item->last_displayed_at->diffForHumans() : 'Never shown' }}
                                     </td>
                                     <td class="py-3 px-3 first:pl-0 last:pr-0 text-sm whitespace-nowrap">
                                         <div class="flex justify-end gap-2">
