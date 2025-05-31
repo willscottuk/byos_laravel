@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class Device extends Model
 {
@@ -60,6 +61,10 @@ class Device extends Model
 
     public function getUpdateFirmwareAttribute(): bool
     {
+        if ($this->update_firmware_id) {
+            return true;
+        }
+
         if ($this->proxy_cloud_response && $this->proxy_cloud_response['update_firmware']) {
             return true;
         }
@@ -69,6 +74,17 @@ class Device extends Model
 
     public function getFirmwareUrlAttribute(): ?string
     {
+        if ($this->update_firmware_id) {
+            $firmware = Firmware::find($this->update_firmware_id);
+            if ($firmware) {
+                if ($firmware->storage_location) {
+                    return Storage::disk('public')->url($firmware->storage_location);
+                }
+
+                return $firmware->url;
+            }
+        }
+
         if ($this->proxy_cloud_response && $this->proxy_cloud_response['firmware_url']) {
             return $this->proxy_cloud_response['firmware_url'];
         }
@@ -80,6 +96,10 @@ class Device extends Model
     {
         if ($this->proxy_cloud_response) {
             $this->proxy_cloud_response = array_merge($this->proxy_cloud_response, ['update_firmware' => false]);
+            $this->save();
+        }
+        if ($this->update_firmware_id) {
+            $this->update_firmware_id = null;
             $this->save();
         }
     }
@@ -149,5 +169,10 @@ class Device extends Model
     public function mirrorDevice(): BelongsTo
     {
         return $this->belongsTo(Device::class, 'mirror_device_id');
+    }
+
+    public function updateFirmware(): BelongsTo
+    {
+        return $this->belongsTo(Firmware::class, 'update_firmware_id');
     }
 }

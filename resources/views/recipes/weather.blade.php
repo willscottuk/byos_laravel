@@ -3,13 +3,13 @@
     <x-trmnl::layout class="layout--col gap--space-between">
         <div class="grid" style="gap: 9px;">
             <div class="row row--center col--span-3 col--end">
-                <img class="weather-image" style="max-height: 150px; margin:auto;" src="https://usetrmnl.com/images/weather/wi-thermometer.svg">
+                <img class="weather-image" style="max-height: 150px; margin:auto;" src="https://usetrmnl.com/images/plugins/weather/wi-thermometer.svg">
             </div>
             <div class="col col--span-3 col--end">
                 <div class="item h--full">
                     <div class="meta"></div>
                     <div class="justify-center">
-                        <span class="value value--xxxlarge" data-fit-value="true">{{Arr::get($data, 'properties.timeseries.0.data.instant.details.air_temperature', 'N/A')}}</span>
+                        <span class="value value--xxlarge" data-fit-value="true">{{Arr::get($data, 'properties.timeseries.0.data.instant.details.air_temperature', 'N/A')}}</span>
                         <span class="label">Temperature</span>
                     </div>
                 </div>

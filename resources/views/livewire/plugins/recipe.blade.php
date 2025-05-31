@@ -2,6 +2,7 @@
 
 use App\Models\Plugin;
 use Livewire\Volt\Component;
+use Illuminate\Support\Facades\Blade;
 
 new class extends Component {
     public Plugin $plugin;
@@ -11,7 +12,7 @@ new class extends Component {
     public string $name;
     public int $data_stale_minutes;
     public string $data_strategy;
-    public string $polling_url;
+    public string|null $polling_url;
     public string $polling_verb;
     public string|null $polling_header;
     public $data_payload;
@@ -29,8 +30,19 @@ new class extends Component {
 
         if ($this->plugin->render_markup_view) {
             try {
-                $viewPath = resource_path('views/' . str_replace('.', '/', $this->plugin->render_markup_view) . '.blade.php');
-                $this->view_content = file_get_contents($viewPath);
+                $basePath = resource_path('views/' . str_replace('.', '/', $this->plugin->render_markup_view));
+                $paths = [
+                    $basePath . '.blade.php',
+                    $basePath . '.liquid',
+                ];
+
+                $this->view_content = null;
+                foreach ($paths as $path) {
+                    if (file_exists($path)) {
+                        $this->view_content = file_get_contents($path);
+                        break;
+                    }
+                }
             } catch (\Exception $e) {
                 $this->view_content = null;
             }
@@ -61,7 +73,7 @@ new class extends Component {
         'name' => 'required|string|max:255',
         'data_stale_minutes' => 'required|integer|min:1',
         'data_strategy' => 'required|string|in:polling,webhook',
-        'polling_url' => 'required|url',
+        'polling_url' => 'required_if:data_strategy,polling|nullable|url',
         'polling_verb' => 'required|string|in:get,post',
         'polling_header' => 'nullable|string|max:255',
         'blade_code' => 'nullable|string',
@@ -188,6 +200,22 @@ HTML;
 HTML;
     }
 
+    public function renderPreview(): void
+    {
+        abort_unless(auth()->user()->plugins->contains($this->plugin), 403);
+
+        try {
+            if ($this->plugin->render_markup_view) {
+                $previewMarkup = view($this->plugin->render_markup_view, ['data' => $this->plugin->data_payload])->render();
+            } else {
+                $previewMarkup = Blade::render($this->plugin->render_markup, ['data' => $this->plugin->data_payload]);
+            }
+            $this->dispatch('preview-updated', preview: $previewMarkup);
+        } catch (\Exception $e) {
+            $this->dispatch('preview-error', message: $e->getMessage());
+        }
+    }
+
     public function deletePlugin(): void
     {
         abort_unless(auth()->user()->plugins->contains($this->plugin), 403);
@@ -206,6 +234,9 @@ HTML;
             </h2>
 
             <flux:button.group>
+                <flux:modal.trigger name="preview-plugin">
+                    <flux:button icon="eye" wire:click="renderPreview">Preview</flux:button>
+                </flux:modal.trigger>
                 <flux:modal.trigger name="add-to-playlist">
                     <flux:button icon="play" variant="primary">Add to Playlist</flux:button>
                 </flux:modal.trigger>
@@ -285,7 +316,8 @@ HTML;
         <flux:modal name="delete-plugin" class="min-w-[22rem] space-y-6">
             <div>
                 <flux:heading size="lg">Delete {{ $plugin->name }}?</flux:heading>
-                <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">This will remove this plugin from your account.</p>
+                <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">This will remove this plugin from your
+                    account.</p>
             </div>
 
             <div class="flex gap-2">
@@ -294,6 +326,16 @@ HTML;
                     <flux:button variant="ghost">Cancel</flux:button>
                 </flux:modal.close>
                 <flux:button wire:click="deletePlugin" variant="danger">Delete plugin</flux:button>
+            </div>
+        </flux:modal>
+
+        <flux:modal name="preview-plugin" class="min-w-[850px] min-h-[480px] space-y-6">
+            <div>
+                <flux:heading size="lg">Preview {{ $plugin->name }}</flux:heading>
+            </div>
+
+            <div class="bg-white dark:bg-zinc-900 rounded-lg overflow-hidden">
+                <iframe id="preview-frame" class="w-full h-[480px] border-0"></iframe>
             </div>
         </flux:modal>
 
@@ -327,7 +369,8 @@ HTML;
                                         placeholder="https://example.com/api"
                                         class="block mt-1 w-full" type="text" name="polling_url" autofocus>
                                 <x-slot name="iconTrailing">
-                                    <flux:button size="sm" variant="subtle" icon="cloud-arrow-down" wire:click="updateData"
+                                    <flux:button size="sm" variant="subtle" icon="cloud-arrow-down"
+                                                 wire:click="updateData"
                                                  tooltip="Fetch data now" class="-mr-1"/>
                                 </x-slot>
                             </flux:input>
@@ -363,9 +406,10 @@ HTML;
                             </flux:input>
                         </div>
                         <div>
-                            <p>Send JSON payload with key <code>merge_variables</code> to the webhook URL. The payload will be merged with the plugin data.</p>
+                            <p>Send JSON payload with key <code>merge_variables</code> to the webhook URL. The payload
+                                will be merged with the plugin data.</p>
                         </div>
-                            @endif
+                    @endif
 
                     <div class="flex">
                         <flux:spacer/>
@@ -440,3 +484,19 @@ HTML;
         </div> --}}
     </div>
 </div>
+
+@script
+<script>
+    $wire.on('preview-updated', ({ preview }) => {
+        const frame = document.getElementById('preview-frame');
+        const frameDoc = frame.contentDocument || frame.contentWindow.document;
+        frameDoc.open();
+        frameDoc.write(preview);
+        frameDoc.close();
+    });
+
+    $wire.on('preview-error', ({ message }) => {
+        alert('Preview Error: ' + message);
+    });
+</script>
+@endscript
