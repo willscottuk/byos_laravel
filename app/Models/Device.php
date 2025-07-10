@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +29,7 @@ class Device extends Model
         'sleep_mode_from' => 'datetime:H:i',
         'sleep_mode_to' => 'datetime:H:i',
         'special_function' => 'string',
+        'pause_until' => 'datetime',
     ];
 
     public function getBatteryPercentAttribute()
@@ -190,35 +193,41 @@ class Device extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function isSleepModeActive(?\DateTimeInterface $now = null): bool
+    public function isSleepModeActive(?DateTimeInterface $now = null): bool
     {
-        if (!$this->sleep_mode_enabled || !$this->sleep_mode_from || !$this->sleep_mode_to) {
+        if (! $this->sleep_mode_enabled || ! $this->sleep_mode_from || ! $this->sleep_mode_to) {
             return false;
         }
-        $now = $now ? \Carbon\Carbon::instance($now) : now();
-        $from = $this->sleep_mode_from instanceof \Carbon\Carbon ? $this->sleep_mode_from : \Carbon\Carbon::createFromFormat('H:i:s', $this->sleep_mode_from);
-        $to = $this->sleep_mode_to instanceof \Carbon\Carbon ? $this->sleep_mode_to : \Carbon\Carbon::createFromFormat('H:i:s', $this->sleep_mode_to);
+
+        $now = $now ? Carbon::instance($now) : now();
+
         // Handle overnight ranges (e.g. 22:00 to 06:00)
-        return $from < $to
-            ? $now->between($from, $to)
-            : ($now->gte($from) || $now->lte($to));
+        return $this->sleep_mode_from < $this->sleep_mode_to
+            ? $now->between($this->sleep_mode_from, $this->sleep_mode_to)
+            : ($now->gte($this->sleep_mode_from) || $now->lte($this->sleep_mode_to));
     }
 
-    public function getSleepModeEndsInSeconds(?\DateTimeInterface $now = null): ?int
+    public function getSleepModeEndsInSeconds(?DateTimeInterface $now = null): ?int
     {
-        if (!$this->sleep_mode_enabled || !$this->sleep_mode_from || !$this->sleep_mode_to) {
+        if (! $this->sleep_mode_enabled || ! $this->sleep_mode_from || ! $this->sleep_mode_to) {
             return null;
         }
 
-        $now = $now ? \Carbon\Carbon::instance($now) : now();
-        $from = $this->sleep_mode_from instanceof \Carbon\Carbon ? $this->sleep_mode_from : \Carbon\Carbon::createFromFormat('H:i:s', $this->sleep_mode_from);
-        $to = $this->sleep_mode_to instanceof \Carbon\Carbon ? $this->sleep_mode_to : \Carbon\Carbon::createFromFormat('H:i:s', $this->sleep_mode_to);
+        $now = $now ? Carbon::instance($now) : now();
+        $from = $this->sleep_mode_from;
+        $to = $this->sleep_mode_to;
 
         // Handle overnight ranges (e.g. 22:00 to 06:00)
-        if ($from < $to) {
-            return $now->between($from, $to) ? $now->diffInSeconds($to, false) : null;
-        } else {
-            return ($now->gte($from) || $now->lt($to)) ? $now->diffInSeconds($to->addDay(), false) : null;
+        if ($this->sleep_mode_from < $to) {
+            return $now->between($from, $to) ? (int) $now->diffInSeconds($to, false) : null;
         }
+
+        return ($now->gte($from) || $now->lt($to)) ? (int) $now->diffInSeconds($to->addDay(), false) : null;
+
+    }
+
+    public function isPauseActive(): bool
+    {
+        return $this->pause_until && $this->pause_until->isFuture();
     }
 }
